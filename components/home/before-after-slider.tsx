@@ -94,10 +94,10 @@ export function BeforeAfterSlider() {
                 <div className="grid grid-cols-2 gap-0">
                   <div className="relative">
                     <Image
-                      src="/images/bin-before.jpg"
-                      alt="Dirty garbage can interior before cleaning"
-                      width={828}
-                      height={234}
+                      src="/images/bin-before.png"
+                      alt="Dirty garbage can before cleaning"
+                      width={819}
+                      height={1024}
                       className="h-full w-full object-cover"
                     />
                     <span className="absolute top-3 left-3 rounded-md bg-zinc-800/90 px-2.5 py-1 text-[10px] font-bold uppercase text-white">
@@ -106,10 +106,10 @@ export function BeforeAfterSlider() {
                   </div>
                   <div className="relative">
                     <Image
-                      src="/images/bin-after.jpg"
-                      alt="Clean garbage can interior after cleaning"
-                      width={828}
-                      height={234}
+                      src="/images/bin-after.png"
+                      alt="Clean garbage can after cleaning"
+                      width={819}
+                      height={1024}
                       className="h-full w-full object-cover"
                     />
                     <span className="absolute top-3 right-3 rounded-md bg-primary px-2.5 py-1 text-[10px] font-bold uppercase text-primary-foreground">
@@ -128,7 +128,7 @@ export function BeforeAfterSlider() {
                 {/* After (clean) - full background */}
                 <div className="absolute inset-0">
                   <Image
-                    src="/images/bin-after.jpg"
+                    src="/images/bin-after.png"
                     alt=""
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
@@ -147,7 +147,7 @@ export function BeforeAfterSlider() {
                   style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
                 >
                   <Image
-                    src="/images/bin-before.jpg"
+                    src="/images/bin-before.png"
                     alt=""
                     fill
                     sizes="(max-width: 1024px) 100vw, 50vw"
