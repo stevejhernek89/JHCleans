@@ -1,7 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Heart } from "lucide-react";
-import { aboutContent } from "@/lib/config/content";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { cn } from "@/lib/utils";
 
 interface FoundersPhotoProps {
@@ -72,7 +74,8 @@ export function FoundersPhoto({
   showCaption = true,
   showLink = false,
 }: FoundersPhotoProps) {
-  const { founders, foundersNote, photoPlaceholder } = aboutContent;
+  const { about } = useSiteContent();
+  const { founders, foundersNote, photoPlaceholder } = about;
   const [leftFounder, rightFounder] = founders;
 
   return (

@@ -3,14 +3,15 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
-import { testimonialsConfig } from "@/lib/config/content";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { FoundersPhoto } from "@/components/home/founders-photo";
 import { usePrefersReducedMotion } from "@/lib/hooks/use-prefers-reduced-motion";
 
 export function TestimonialsSection() {
   const [current, setCurrent] = useState(0);
   const reducedMotion = usePrefersReducedMotion();
-  const { items, isPlaceholder } = testimonialsConfig;
+  const { testimonials, homepage } = useSiteContent();
+  const { items, isPlaceholder } = testimonials;
 
   const next = () => setCurrent((c) => (c + 1) % items.length);
   const prev = () => setCurrent((c) => (c - 1 + items.length) % items.length);
@@ -24,7 +25,7 @@ export function TestimonialsSection() {
               id="testimonials-heading"
               className="text-3xl font-bold text-foreground sm:text-4xl"
             >
-              What Our Customers Say
+              {homepage.sections.testimonials.title}
             </h2>
             {isPlaceholder && (
               <p className="mt-2 text-sm text-amber-400/80">

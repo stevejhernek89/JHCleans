@@ -3,7 +3,7 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { MapPin, Droplets, Shield, Sparkles } from "lucide-react";
 import { useRef } from "react";
-import { serviceAreaConfig } from "@/lib/config/service-area";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { usePrefersReducedMotion } from "@/lib/hooks/use-prefers-reduced-motion";
 
 const floatingIcons = [
@@ -14,6 +14,7 @@ const floatingIcons = [
 
 export function HeroVisual() {
   const reducedMotion = usePrefersReducedMotion();
+  const { serviceArea } = useSiteContent();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const mouseX = useMotionValue(0);
@@ -179,7 +180,7 @@ export function HeroVisual() {
               <MapPin className="h-4 w-4 text-accent shrink-0" aria-hidden="true" />
               <div>
                 <p className="text-xs font-semibold text-foreground">
-                  {serviceAreaConfig.regionLabel}
+                  {serviceArea.regionLabel}
                 </p>
                 <p className="text-[10px] text-muted-foreground">
                   Check your ZIP below

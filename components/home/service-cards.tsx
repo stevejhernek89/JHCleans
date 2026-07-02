@@ -1,12 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { Clock, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { servicesConfig } from "@/lib/config/pricing";
+import { useSiteContent } from "@/lib/content/site-content-context";
 
 export function ServiceCards() {
+  const { services, pages } = useSiteContent();
+
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {servicesConfig.map((service) => (
+      {services.map((service) => (
         <article
           key={service.id}
           className="flex flex-col glass rounded-2xl p-6 transition-all hover:-translate-y-1 hover:border-accent/20 hover:shadow-lg hover:shadow-accent/5"
@@ -33,7 +37,7 @@ export function ServiceCards() {
           <p className="mt-4 text-sm font-semibold text-accent">{service.priceLabel}</p>
 
           <Button asChild className="mt-4 w-full">
-            <Link href={service.href}>Book This Service</Link>
+            <Link href={service.href}>{pages.services.ctaLabel}</Link>
           </Button>
         </article>
       ))}

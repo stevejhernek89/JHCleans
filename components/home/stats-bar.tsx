@@ -11,7 +11,7 @@ import {
   Leaf,
   type LucideIcon,
 } from "lucide-react";
-import { businessConfig } from "@/lib/config/business";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { usePrefersReducedMotion } from "@/lib/hooks/use-prefers-reduced-motion";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -22,7 +22,8 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 export function StatsBar() {
-  const { stats } = businessConfig;
+  const { business } = useSiteContent();
+  const { stats } = business;
 
   if (!stats.enabled) return null;
 

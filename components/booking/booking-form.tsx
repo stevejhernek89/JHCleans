@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { bookingSchema, type BookingSchema } from "@/lib/validations/schemas";
 import { submitBookingAction } from "@/app/actions/booking";
-import { businessConfig } from "@/lib/config/business";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { trackConversion } from "@/lib/analytics/track";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +39,7 @@ const serviceOptions = [
 ];
 
 export function BookingForm() {
+  const { business } = useSiteContent();
   const searchParams = useSearchParams();
   const planParam = searchParams.get("plan");
   const [step, setStep] = useState(1);
@@ -369,7 +370,7 @@ export function BookingForm() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {businessConfig.booking.timeWindows.map((tw) => (
+                      {business.booking.timeWindows.map((tw) => (
                         <SelectItem key={tw.value} value={tw.value}>
                           {tw.label}
                         </SelectItem>
@@ -390,7 +391,7 @@ export function BookingForm() {
                       <SelectValue placeholder="Select your trash day" />
                     </SelectTrigger>
                     <SelectContent>
-                      {businessConfig.booking.trashDays.map((day) => (
+                      {business.booking.trashDays.map((day) => (
                         <SelectItem key={day} value={day}>
                           {day}
                         </SelectItem>
@@ -451,7 +452,7 @@ export function BookingForm() {
                 )}
               />
               <Label htmlFor="consent" className="text-sm leading-relaxed text-muted-foreground">
-                I agree to be contacted by {businessConfig.name} regarding my booking
+                I agree to be contacted by {business.name} regarding my booking
                 request. I understand this is a service request, not a confirmed
                 appointment until verified.
               </Label>

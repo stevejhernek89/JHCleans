@@ -10,7 +10,7 @@ import {
   RefreshCw,
   type LucideIcon,
 } from "lucide-react";
-import { featureCards } from "@/lib/config/content";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { usePrefersReducedMotion } from "@/lib/hooks/use-prefers-reduced-motion";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -24,6 +24,7 @@ const iconMap: Record<string, LucideIcon> = {
 
 export function FeatureCards() {
   const reducedMotion = usePrefersReducedMotion();
+  const { features } = useSiteContent();
 
   return (
     <section className="py-16 sm:py-20" aria-labelledby="features-heading">
@@ -32,7 +33,7 @@ export function FeatureCards() {
           Our Features
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-          {featureCards.map((feature, i) => {
+          {features.map((feature, i) => {
             const Icon = iconMap[feature.icon] ?? Sparkles;
             return (
               <motion.article

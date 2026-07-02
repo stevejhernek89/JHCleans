@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   CalendarDays,
   DollarSign,
+  FileText,
   LayoutDashboard,
   LogOut,
   Sparkles,
@@ -15,6 +16,7 @@ import { Button } from "@/components/ui/button";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin/content", label: "Site Content", icon: FileText },
   { href: "/admin/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/admin/finances", label: "Finances", icon: DollarSign },
 ];

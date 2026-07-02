@@ -10,12 +10,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  checkZipCode,
-  serviceAreaConfig,
-  zipStatusMessages,
-} from "@/lib/config/service-area";
-import { faqItems } from "@/lib/config/content";
+import { useSiteContent } from "@/lib/content/site-content-context";
+import { checkZipCode } from "@/lib/content/zip-check";
 import { cn } from "@/lib/utils";
 import { trackConversion } from "@/lib/analytics/track";
 
@@ -24,7 +20,8 @@ interface FaqSectionProps {
 }
 
 export function FaqSection({ compact = false }: FaqSectionProps) {
-  const items = compact ? faqItems.slice(0, 6) : faqItems;
+  const { faq, homepage } = useSiteContent();
+  const items = compact ? faq.slice(0, 6) : faq;
 
   return (
     <div
@@ -32,7 +29,7 @@ export function FaqSection({ compact = false }: FaqSectionProps) {
       className={cn("glass rounded-2xl p-6 sm:p-8 scroll-mt-24")}
     >
       <h2 className="mb-6 text-2xl font-bold text-foreground sm:text-3xl">
-        Frequently Asked Questions
+        {homepage.sections.faq.title}
       </h2>
 
       <Accordion type="single" collapsible className="w-full">
@@ -54,6 +51,7 @@ export function FaqSection({ compact = false }: FaqSectionProps) {
 }
 
 export function ServiceAreaSection() {
+  const { serviceArea, homepage } = useSiteContent();
   const [zip, setZip] = useState("");
   const [result, setResult] = useState<ReturnType<typeof checkZipCode> | null>(null);
   const [error, setError] = useState("");
@@ -68,12 +66,12 @@ export function ServiceAreaSection() {
       return;
     }
 
-    const status = checkZipCode(zip);
+    const status = checkZipCode(zip, serviceArea);
     setResult(status);
     trackConversion("zip_check");
   };
 
-  const message = result ? zipStatusMessages[result] : null;
+  const message = result ? serviceArea.zipMessages[result] : null;
 
   return (
     <section className="py-16 sm:py-24" aria-labelledby="service-area-heading">
@@ -84,10 +82,10 @@ export function ServiceAreaSection() {
               id="service-area-heading"
               className="mb-2 text-2xl font-bold text-foreground sm:text-3xl"
             >
-              Service Area
+              {homepage.sections.serviceArea.title}
             </h2>
             <p className="mb-6 text-muted-foreground">
-              Enter your ZIP code to see if we service your neighborhood.
+              {homepage.sections.serviceArea.subtitle}
             </p>
 
             <form onSubmit={handleCheck} className="flex gap-2">
@@ -137,7 +135,7 @@ export function ServiceAreaSection() {
               aria-hidden="true"
             >
               <div className="absolute inset-0 grid-pattern opacity-30" />
-              {serviceAreaConfig.featuredCities.slice(0, 6).map((city, i) => (
+              {serviceArea.featuredCities.slice(0, 6).map((city, i) => (
                 <div
                   key={city.name}
                   className="absolute"
@@ -150,12 +148,12 @@ export function ServiceAreaSection() {
                 </div>
               ))}
               <p className="absolute bottom-3 left-3 text-xs text-muted-foreground">
-                {serviceAreaConfig.mapNote}
+                {serviceArea.mapNote}
               </p>
             </div>
 
             <ul className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {serviceAreaConfig.featuredCities.map((city) => (
+              {serviceArea.featuredCities.map((city) => (
                 <li
                   key={city.name}
                   className="flex items-center gap-1.5 text-xs text-muted-foreground"

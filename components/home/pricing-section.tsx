@@ -5,15 +5,16 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { pricingConfig } from "@/lib/config/pricing";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { cn } from "@/lib/utils";
 import { usePrefersReducedMotion } from "@/lib/hooks/use-prefers-reduced-motion";
 
 export function PricingSection() {
   const [billingType, setBillingType] = useState<"one-time" | "recurring">("recurring");
   const reducedMotion = usePrefersReducedMotion();
+  const { pricing, homepage } = useSiteContent();
 
-  const displayPlans = pricingConfig.plans;
+  const displayPlans = pricing.plans;
 
   return (
     <section className="py-16 sm:py-24" aria-labelledby="pricing-heading">
@@ -23,10 +24,10 @@ export function PricingSection() {
             id="pricing-heading"
             className="text-3xl font-bold text-foreground sm:text-4xl"
           >
-            Simple, Transparent Pricing
+            {homepage.sections.pricing.title}
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Choose the plan that fits your home. Final pricing coming soon.
+            {homepage.sections.pricing.subtitle}
           </p>
 
           <div className="mt-8 inline-flex rounded-xl glass p-1" role="group" aria-label="Billing type">
@@ -58,11 +59,11 @@ export function PricingSection() {
             </button>
           </div>
 
-          {billingType === "recurring" && pricingConfig.recurringSavingsLabel && (
+          {billingType === "recurring" && pricing.recurringSavingsLabel && (
             <p className="mt-3 text-sm text-primary font-medium">
-              {pricingConfig.recurringSavingsLabel}
-              {pricingConfig.savingsPercent !== null &&
-                ` — save ${pricingConfig.savingsPercent}%`}
+              {pricing.recurringSavingsLabel}
+              {pricing.savingsPercent !== null &&
+                ` — save ${pricing.savingsPercent}%`}
             </p>
           )}
         </div>

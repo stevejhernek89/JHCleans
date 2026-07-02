@@ -5,18 +5,14 @@ import Link from "next/link";
 import { ArrowRight, Info, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroVisual } from "@/components/home/hero-visual";
-import { businessConfig } from "@/lib/config/business";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { trackCtaClick } from "@/lib/analytics/track";
 import { usePrefersReducedMotion } from "@/lib/hooks/use-prefers-reduced-motion";
 
-const trustIndicators = [
-  "Convenient curbside service",
-  "Family-focused local business",
-  "Satisfaction-focused service",
-];
-
 export function HeroSection() {
   const reducedMotion = usePrefersReducedMotion();
+  const { business, homepage } = useSiteContent();
+  const { hero } = homepage;
 
   const fadeIn = reducedMotion
     ? {}
@@ -43,7 +39,7 @@ export function HeroSection() {
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5">
               <span className="h-2 w-2 rounded-full bg-primary animate-pulse" aria-hidden="true" />
               <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                Professional Curbside Service
+                {hero.badge}
               </span>
             </div>
 
@@ -52,13 +48,13 @@ export function HeroSection() {
                 id="hero-heading"
                 className="text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl"
               >
-                Professional Garbage Can Cleaning,{" "}
+                {hero.headline}{" "}
                 <span className="text-gradient-accent">
-                  Sanitizing &amp; Deodorizing
+                  {hero.headlineAccent}
                 </span>
               </h1>
               <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-                {businessConfig.description}
+                {business.description}
               </p>
             </div>
 
@@ -68,7 +64,7 @@ export function HeroSection() {
                   href="/book"
                   onClick={() => trackCtaClick("hero_book_cleaning")}
                 >
-                  Book a Cleaning
+                  {hero.primaryCta}
                   <ArrowRight className="transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
@@ -78,13 +74,13 @@ export function HeroSection() {
                   onClick={() => trackCtaClick("hero_free_quote")}
                 >
                   <Info className="h-4 w-4" />
-                  Get a Free Quote
+                  {hero.secondaryCta}
                 </Link>
               </Button>
             </div>
 
             <ul className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-x-6" role="list">
-              {trustIndicators.map((item) => (
+              {hero.trustIndicators.map((item) => (
                 <li
                   key={item}
                   className="flex items-center gap-2 text-sm text-muted-foreground"

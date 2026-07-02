@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState, useTransition } from "react";
 import Link from "next/link";
-import { ArrowRight, CalendarDays } from "lucide-react";
+import { ArrowRight, CalendarDays, Inbox } from "lucide-react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { StatsCards } from "@/components/admin/stats-cards";
 import { JobStatusBadge } from "@/components/admin/job-calendar";
@@ -27,6 +27,8 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  const pendingRequests = data?.pendingRequests ?? [];
 
   const upcomingJobs = (data?.jobs ?? [])
     .filter(
@@ -57,6 +59,54 @@ export default function AdminDashboardPage() {
         {data ? (
           <>
             <StatsCards stats={data.stats} />
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Inbox className="h-5 w-5 text-amber-400" />
+                  New Cleaning Requests
+                </CardTitle>
+                <Button asChild variant="ghost" size="sm">
+                  <Link href="/admin/calendar">
+                    Manage in calendar
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {pendingRequests.length === 0 ? (
+                  <p className="py-6 text-center text-sm text-muted-foreground">
+                    No pending requests. New bookings from the website will appear here.
+                  </p>
+                ) : (
+                  <ul className="space-y-3">
+                    {pendingRequests.slice(0, 8).map((job: Job) => (
+                      <li
+                        key={job.id}
+                        className="flex items-center justify-between rounded-xl bg-white/5 px-4 py-3"
+                      >
+                        <div>
+                          <p className="font-medium">{job.customerName}</p>
+                          <p className="text-sm text-muted-foreground">{job.title}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(job.createdAt).toLocaleString(undefined, {
+                              month: "short",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "2-digit",
+                            })}
+                            {job.bookingReference
+                              ? ` · Ref ${job.bookingReference}`
+                              : ""}
+                          </p>
+                        </div>
+                        <JobStatusBadge status={job.status} />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
 
             <div className="grid gap-6 lg:grid-cols-2">
               <Card>

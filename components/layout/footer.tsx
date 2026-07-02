@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { Logo } from "@/components/layout/logo";
-import { businessConfig } from "@/lib/config/business";
-import { navigationLinks } from "@/lib/config/content";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { formatPhoneForTel } from "@/lib/utils";
 
 const socialLinks = [
@@ -17,7 +16,8 @@ const socialLinks = [
 
 export function Footer() {
   const year = new Date().getFullYear();
-  const { contact, social } = businessConfig;
+  const { business, navigation, layout } = useSiteContent();
+  const { contact, social } = business;
   const configuredSocial = socialLinks.filter(
     (s) => social[s.key] && social[s.key].length > 0
   );
@@ -29,10 +29,10 @@ export function Footer() {
           <div className="space-y-4">
             <Logo />
             <p className="text-sm leading-relaxed text-muted-foreground">
-              {businessConfig.description}
+              {business.description}
             </p>
             <p className="text-sm font-medium text-accent">
-              {businessConfig.tagline}
+              {business.tagline}
             </p>
           </div>
 
@@ -85,7 +85,7 @@ export function Footer() {
               Quick Links
             </h3>
             <ul className="space-y-2 text-sm">
-              {navigationLinks.map((link) => (
+              {navigation.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -100,7 +100,7 @@ export function Footer() {
                   href="/book"
                   className="text-muted-foreground hover:text-accent transition-colors"
                 >
-                  Book Now
+                  {layout.footerBookLabel}
                 </Link>
               </li>
             </ul>
@@ -133,7 +133,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-4 border-t border-border/50 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground">
-            &copy; {year} {businessConfig.name}. All rights reserved.
+            &copy; {year} {business.name}. All rights reserved.
           </p>
           <nav className="flex flex-wrap gap-4 text-xs" aria-label="Legal">
             <Link href="/privacy" className="text-muted-foreground hover:text-accent">

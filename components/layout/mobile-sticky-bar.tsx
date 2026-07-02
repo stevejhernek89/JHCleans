@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { trackCtaClick } from "@/lib/analytics/track";
 
 export function MobileStickyBar() {
   const pathname = usePathname();
+  const { layout } = useSiteContent();
 
   if (pathname === "/book") return null;
 
@@ -22,12 +24,12 @@ export function MobileStickyBar() {
             href="/contact?subject=quote"
             onClick={() => trackCtaClick("mobile_sticky_quote")}
           >
-            Get Quote
+            {layout.mobileQuoteCta}
           </Link>
         </Button>
         <Button asChild className="flex-1" size="sm">
           <Link href="/book" onClick={() => trackCtaClick("mobile_sticky_book")}>
-            Book Now
+            {layout.mobileBookCta}
           </Link>
         </Button>
       </div>

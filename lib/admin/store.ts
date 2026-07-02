@@ -5,6 +5,7 @@ import {
   readStoreFromSupabase,
   writeStoreToSupabase,
 } from "./db";
+import type { SiteContent } from "@/lib/content/types";
 import type { AdminStore, Job, Transaction } from "./types";
 
 function getDataDir(): string {
@@ -20,6 +21,7 @@ const STORE_FILE = path.join(DATA_DIR, "admin-store.json");
 const defaultStore: AdminStore = {
   jobs: [],
   transactions: [],
+  siteContentOverrides: null,
 };
 
 async function ensureStore(): Promise<void> {
@@ -55,7 +57,20 @@ async function writeStore(store: AdminStore): Promise<void> {
     await writeStoreToSupabase(store);
     return;
   }
+
+  if (process.env.VERCEL && getSupabaseUrlHint()) {
+    throw new Error(
+      "Supabase is not configured for production. Set SUPABASE_URL and SUPABASE_SERVICE_KEY so customer requests persist in the admin dashboard."
+    );
+  }
+
   await writeStoreToFile(store);
+}
+
+function getSupabaseUrlHint(): boolean {
+  return Boolean(
+    process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL
+  );
 }
 
 export function generateId(prefix: string): string {
@@ -150,7 +165,26 @@ export async function getAdminStore(): Promise<AdminStore> {
   return readStore();
 }
 
+export async function getSiteContentOverrides(): Promise<Partial<SiteContent> | null> {
+  const store = await readStore();
+  return store.siteContentOverrides ?? null;
+}
+
+export async function saveSiteContentOverrides(
+  overrides: Partial<SiteContent>
+): Promise<Partial<SiteContent>> {
+  const store = await readStore();
+  store.siteContentOverrides = {
+    ...overrides,
+    updatedAt: new Date().toISOString(),
+  };
+  await writeStore(store);
+  return store.siteContentOverrides;
+}
+
 export async function seedDemoData(): Promise<void> {
+  if (process.env.ADMIN_SEED_DEMO !== "true") return;
+
   const store = await readStore();
   if (store.jobs.length > 0) return;
 

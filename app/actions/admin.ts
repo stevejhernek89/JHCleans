@@ -26,7 +26,7 @@ import {
   loginSchema,
   transactionSchema,
 } from "@/lib/validations/admin-schemas";
-import type { BookingSchema } from "@/lib/validations/schemas";
+import type { BookingSchema, ContactSchema, QuoteSchema } from "@/lib/validations/schemas";
 
 async function requireAuth() {
   const authed = await isAdminAuthenticated();
@@ -44,6 +44,28 @@ function timeWindowToHours(window: string): { start: number; end: number } {
     default:
       return { start: 9, end: 17 };
   }
+}
+
+function mapQuoteServiceType(type: QuoteSchema["serviceType"]): Job["serviceType"] {
+  switch (type) {
+    case "commercial":
+    case "multi-can":
+      return "multi-can";
+    case "monthly":
+      return "monthly";
+    case "biweekly":
+      return "biweekly";
+    default:
+      return "one-time";
+  }
+}
+
+function buildBookingNotes(booking: BookingSchema): string {
+  const parts = [`Trash day: ${booking.trashCollectionDay}`];
+  if (booking.notes?.trim()) {
+    parts.push(booking.notes.trim());
+  }
+  return parts.join("\n\n");
 }
 
 export async function loginAction(formData: unknown) {
@@ -110,15 +132,24 @@ export async function getDashboardDataAction() {
     );
   });
 
+  const pendingRequests = jobs
+    .filter((job) => job.status === "pending")
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
   return {
     jobs,
     transactions,
+    pendingRequests,
     stats: {
       monthRevenue,
       monthExpenses,
       monthProfit: monthRevenue - monthExpenses,
       upcomingCount: upcomingJobs.length,
       todayCount: todayJobs.length,
+      pendingRequestsCount: pendingRequests.length,
       totalJobs: jobs.length,
       completedJobs: jobs.filter((j) => j.status === "completed").length,
     },
@@ -322,7 +353,100 @@ export async function createJobFromBooking(
     scheduledEnd: endDate.toISOString(),
     timeWindow: booking.preferredTimeWindow,
     revenue: 0,
-    notes: booking.notes ?? "",
+    notes: buildBookingNotes(booking),
+    bookingReference: referenceId,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  await createJob(job);
+  return job;
+}
+
+export async function createJobFromQuote(
+  quote: QuoteSchema,
+  referenceId: string
+): Promise<Job> {
+  const scheduledStart = new Date();
+  scheduledStart.setDate(scheduledStart.getDate() + 7);
+  scheduledStart.setHours(9, 0, 0, 0);
+  const scheduledEnd = new Date(scheduledStart);
+  scheduledEnd.setHours(10, 0, 0, 0);
+
+  const notes = [
+    "Quote request — schedule to be confirmed.",
+    quote.message?.trim() ? quote.message.trim() : null,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
+  const now = new Date().toISOString();
+  const job: Job = {
+    id: generateId("job"),
+    title: `${quote.lastName} — Quote Request`,
+    customerName: `${quote.firstName} ${quote.lastName}`,
+    customerEmail: quote.email,
+    customerPhone: quote.phone,
+    address: "Address pending",
+    city: "TBD",
+    state: "TBD",
+    zipCode: quote.zipCode,
+    serviceType: mapQuoteServiceType(quote.serviceType),
+    garbageCanCount: quote.binCount,
+    recyclingCanCount: 0,
+    status: "pending",
+    scheduledStart: scheduledStart.toISOString(),
+    scheduledEnd: scheduledEnd.toISOString(),
+    timeWindow: "flexible",
+    revenue: 0,
+    notes,
+    bookingReference: referenceId,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  await createJob(job);
+  return job;
+}
+
+export async function createJobFromContact(
+  contact: ContactSchema,
+  referenceId: string
+): Promise<Job> {
+  const scheduledStart = new Date();
+  scheduledStart.setDate(scheduledStart.getDate() + 7);
+  scheduledStart.setHours(9, 0, 0, 0);
+  const scheduledEnd = new Date(scheduledStart);
+  scheduledEnd.setHours(10, 0, 0, 0);
+
+  const notes = [
+    `Subject: ${contact.subject}`,
+    contact.message.trim(),
+    contact.phone ? `Phone: ${contact.phone}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
+  const now = new Date().toISOString();
+  const job: Job = {
+    id: generateId("job"),
+    title: `${contact.name} — Contact Request`,
+    customerName: contact.name,
+    customerEmail: contact.email,
+    customerPhone: contact.phone ?? "",
+    address: "Address pending",
+    city: "TBD",
+    state: "TBD",
+    zipCode: "00000",
+    serviceType: "one-time",
+    garbageCanCount: 1,
+    recyclingCanCount: 0,
+    status: "pending",
+    scheduledStart: scheduledStart.toISOString(),
+    scheduledEnd: scheduledEnd.toISOString(),
+    timeWindow: "flexible",
+    revenue: 0,
+    notes,
     bookingReference: referenceId,
     createdAt: now,
     updatedAt: now,

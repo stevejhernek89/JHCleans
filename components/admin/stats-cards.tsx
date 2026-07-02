@@ -2,6 +2,7 @@ import {
   CalendarCheck,
   CalendarClock,
   DollarSign,
+  Inbox,
   TrendingUp,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +14,7 @@ interface StatsCardsProps {
     monthProfit: number;
     upcomingCount: number;
     todayCount: number;
+    pendingRequestsCount: number;
     completedJobs: number;
   };
 }
@@ -45,6 +47,12 @@ export function StatsCards({ stats }: StatsCardsProps) {
       value: formatCurrency(stats.monthProfit),
       icon: TrendingUp,
       accent: stats.monthProfit >= 0 ? "text-primary" : "text-destructive",
+    },
+    {
+      label: "Pending Requests",
+      value: stats.pendingRequestsCount.toString(),
+      icon: Inbox,
+      accent: "text-amber-400",
     },
     {
       label: "Jobs Today",

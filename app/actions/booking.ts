@@ -22,6 +22,7 @@ export async function submitBookingAction(formData: unknown) {
       await createJobFromBooking(parsed.data, result.referenceId);
     } catch (storeError) {
       console.error("Failed to create admin job from booking:", storeError);
+      throw storeError;
     }
 
     return {

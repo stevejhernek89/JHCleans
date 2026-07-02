@@ -59,6 +59,7 @@ export interface Transaction {
 export interface AdminStore {
   jobs: Job[];
   transactions: Transaction[];
+  siteContentOverrides?: Partial<import("@/lib/content/types").SiteContent> | null;
 }
 
 export const JOB_STATUS_LABELS: Record<JobStatus, string> = {

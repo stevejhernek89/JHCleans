@@ -117,8 +117,10 @@ export async function submitBooking(data: BookingSchema) {
 }
 
 export async function submitContact(data: ContactSchema) {
+  const referenceId = generateReferenceId();
+
   const html = `
-    <h2>Contact Form Submission</h2>
+    <h2>Contact Form Submission — ${referenceId}</h2>
     <p><strong>Name:</strong> ${data.name}</p>
     <p><strong>Email:</strong> ${data.email}</p>
     ${data.phone ? `<p><strong>Phone:</strong> ${data.phone}</p>` : ""}
@@ -135,6 +137,7 @@ export async function submitContact(data: ContactSchema) {
 
   return {
     success: true,
+    referenceId,
     emailSent: emailResult.sent,
     message: emailResult.sent
       ? "Thank you for reaching out. We'll respond as soon as possible."

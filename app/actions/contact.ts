@@ -1,5 +1,9 @@
 "use server";
 
+import {
+  createJobFromContact,
+  createJobFromQuote,
+} from "@/app/actions/admin";
 import { contactSchema, quoteSchema } from "@/lib/validations/schemas";
 import { submitContact, submitQuote } from "@/lib/email/send";
 
@@ -16,6 +20,14 @@ export async function submitContactAction(formData: unknown) {
     }
 
     const result = await submitContact(parsed.data);
+
+    try {
+      await createJobFromContact(parsed.data, result.referenceId);
+    } catch (storeError) {
+      console.error("Failed to create admin job from contact:", storeError);
+      throw storeError;
+    }
+
     return { success: true, message: result.message };
   } catch (error) {
     console.error("Contact submission error:", error);
@@ -39,6 +51,14 @@ export async function submitQuoteAction(formData: unknown) {
     }
 
     const result = await submitQuote(parsed.data);
+
+    try {
+      await createJobFromQuote(parsed.data, result.referenceId);
+    } catch (storeError) {
+      console.error("Failed to create admin job from quote:", storeError);
+      throw storeError;
+    }
+
     return {
       success: true,
       message: result.message,

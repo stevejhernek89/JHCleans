@@ -18,10 +18,11 @@ import {
 } from "@/components/ui/select";
 import { quoteSchema, type QuoteSchema } from "@/lib/validations/schemas";
 import { submitQuoteAction } from "@/app/actions/contact";
-import { businessConfig } from "@/lib/config/business";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { trackConversion } from "@/lib/analytics/track";
 
 export function QuoteForm() {
+  const { business } = useSiteContent();
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<{
     success: boolean;
@@ -174,7 +175,7 @@ export function QuoteForm() {
           )}
         />
         <Label htmlFor="quote-consent" className="text-sm text-muted-foreground leading-relaxed">
-          I agree to be contacted by {businessConfig.name} with pricing information.
+          I agree to be contacted by {business.name} with pricing information.
         </Label>
       </div>
       {errors.consent && (

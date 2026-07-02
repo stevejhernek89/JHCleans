@@ -6,31 +6,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const pricingPreviewPlans = [
-  {
-    name: "One-Time Clean",
-    description: "Perfect for a fresh start.",
-    price: "$35",
-    note: "per bin",
-    popular: false,
-  },
-  {
-    name: "Monthly Plan",
-    description: "Keep your bins fresh all month.",
-    price: "$25",
-    note: "per bin · Billed monthly",
-    popular: true,
-  },
-  {
-    name: "Multi-Bin Plan",
-    description: "Great for families with extra bins.",
-    price: "$22",
-    note: "per bin · 3+ bins",
-    popular: false,
-  },
-];
+import { useSiteContent } from "@/lib/content/site-content-context";
 
 export function BeforeAfterSlider() {
+  const { homepage } = useSiteContent();
+  const pricingPreviewPlans = homepage.pricingPreview;
+  const { beforeAfter } = homepage.sections;
   const containerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
@@ -86,7 +67,7 @@ export function BeforeAfterSlider() {
                   id="before-after-heading"
                   className="text-sm font-bold uppercase tracking-[0.2em] text-white sm:text-base"
                 >
-                  See the Difference
+                  {beforeAfter.title}
                 </h2>
               </div>
 
@@ -101,7 +82,7 @@ export function BeforeAfterSlider() {
                       className="h-full w-full object-cover"
                     />
                     <span className="absolute top-3 left-3 rounded-md bg-zinc-800/90 px-2.5 py-1 text-[10px] font-bold uppercase text-white">
-                      Before
+                      {beforeAfter.beforeLabel}
                     </span>
                   </div>
                   <div className="relative">
@@ -113,7 +94,7 @@ export function BeforeAfterSlider() {
                       className="h-full w-full object-cover"
                     />
                     <span className="absolute top-3 right-3 rounded-md bg-primary px-2.5 py-1 text-[10px] font-bold uppercase text-primary-foreground">
-                      After
+                      {beforeAfter.afterLabel}
                     </span>
                   </div>
                 </div>
@@ -137,7 +118,7 @@ export function BeforeAfterSlider() {
                     draggable={false}
                   />
                   <span className="absolute top-3 right-3 z-20 rounded-md bg-primary px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary-foreground shadow-lg">
-                    After
+                    {beforeAfter.afterLabel}
                   </span>
                 </div>
 
@@ -156,7 +137,7 @@ export function BeforeAfterSlider() {
                     draggable={false}
                   />
                   <span className="absolute top-3 left-3 rounded-md bg-zinc-800/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-lg">
-                    Before
+                    {beforeAfter.beforeLabel}
                   </span>
                 </div>
 
@@ -191,7 +172,7 @@ export function BeforeAfterSlider() {
             </div>
 
             <p className="mt-5 text-center text-sm text-muted-foreground sm:text-left">
-              We don&apos;t just clean the outside—we deep clean the inside.
+              {beforeAfter.caption}
             </p>
           </div>
 
@@ -203,6 +184,9 @@ export function BeforeAfterSlider() {
 }
 
 function PricingPreview() {
+  const { homepage } = useSiteContent();
+  const pricingPreviewPlans = homepage.pricingPreview;
+
   return (
     <div aria-labelledby="pricing-preview-heading">
       <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#071428] shadow-2xl shadow-black/40">

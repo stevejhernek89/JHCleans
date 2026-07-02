@@ -4,11 +4,14 @@ import Link from "next/link";
 import { ArrowRight, Info } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { trackCtaClick } from "@/lib/analytics/track";
 import { usePrefersReducedMotion } from "@/lib/hooks/use-prefers-reduced-motion";
 
 export function FinalCta() {
   const reducedMotion = usePrefersReducedMotion();
+  const { homepage } = useSiteContent();
+  const { finalCta } = homepage;
 
   return (
     <section
@@ -35,11 +38,10 @@ export function FinalCta() {
             id="final-cta-heading"
             className="text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl"
           >
-            Ready for Cleaner, Fresher Cans?
+            {finalCta.title}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Book your first cleaning today and take one unpleasant household job
-            off your list.
+            {finalCta.body}
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -48,7 +50,7 @@ export function FinalCta() {
                 href="/book"
                 onClick={() => trackCtaClick("final_cta_book")}
               >
-                Book a Cleaning
+                {finalCta.primaryCta}
                 <ArrowRight className="transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -58,7 +60,7 @@ export function FinalCta() {
                 onClick={() => trackCtaClick("final_cta_quote")}
               >
                 <Info className="h-4 w-4" />
-                Request a Quote
+                {finalCta.secondaryCta}
               </Link>
             </Button>
           </div>

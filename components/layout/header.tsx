@@ -7,12 +7,13 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "@/components/layout/logo";
 import { Button } from "@/components/ui/button";
-import { navigationLinks } from "@/lib/config/content";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { cn } from "@/lib/utils";
 import { trackCtaClick } from "@/lib/analytics/track";
 
 export function Header() {
   const pathname = usePathname();
+  const { navigation, layout } = useSiteContent();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -47,7 +48,7 @@ export function Header() {
           <Logo />
 
           <nav className="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
-            {navigationLinks.map((link) => (
+            {navigation.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -63,7 +64,7 @@ export function Header() {
 
           <div className="flex items-center gap-3">
             <Button asChild size="sm" className="hidden sm:inline-flex">
-              <Link href="/book">Book Now</Link>
+              <Link href="/book">{layout.headerCta}</Link>
             </Button>
 
             <button
@@ -111,7 +112,7 @@ export function Header() {
               </div>
 
               <div className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
-                {navigationLinks.map((link, i) => (
+                {navigation.map((link, i) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: 20 }}

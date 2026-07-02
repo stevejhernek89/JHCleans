@@ -4,6 +4,7 @@ import type { AdminStore } from "./types";
 const defaultStore: AdminStore = {
   jobs: [],
   transactions: [],
+  siteContentOverrides: null,
 };
 
 function getSupabaseUrl(): string | undefined {

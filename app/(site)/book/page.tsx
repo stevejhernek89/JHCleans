@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { createPageMetadata } from "@/lib/seo/metadata";
+import { getSiteContent } from "@/lib/content/get-content";
 import { BookingForm } from "@/components/booking/booking-form";
 
 export const metadata = createPageMetadata({
@@ -9,16 +10,18 @@ export const metadata = createPageMetadata({
   path: "/book",
 });
 
-export default function BookPage() {
+export default async function BookPage() {
+  const content = await getSiteContent();
+
   return (
     <div className="pt-28 pb-16 sm:pt-32">
       <div className="mx-auto max-w-2xl px-4 sm:px-6">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-foreground sm:text-4xl">
-            Book a Cleaning
+            {content.pages.book.title}
           </h1>
           <p className="mt-3 text-muted-foreground">
-            Complete the form below to request your curbside bin cleaning service.
+            {content.pages.book.subtitle}
           </p>
         </div>
         <Suspense fallback={<div className="glass rounded-2xl p-8 animate-pulse h-96" />}>

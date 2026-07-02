@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { contactSchema, type ContactSchema } from "@/lib/validations/schemas";
 import { submitContactAction } from "@/app/actions/contact";
-import { businessConfig } from "@/lib/config/business";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { trackConversion } from "@/lib/analytics/track";
 
 interface ContactFormProps {
@@ -19,6 +19,7 @@ interface ContactFormProps {
 }
 
 export function ContactForm({ defaultSubject = "general" }: ContactFormProps) {
+  const { business } = useSiteContent();
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
 
@@ -121,7 +122,7 @@ export function ContactForm({ defaultSubject = "general" }: ContactFormProps) {
           )}
         />
         <Label htmlFor="contact-consent" className="text-sm text-muted-foreground leading-relaxed">
-          I agree to be contacted by {businessConfig.name} regarding my inquiry.
+          I agree to be contacted by {business.name} regarding my inquiry.
         </Label>
       </div>
       {errors.consent && (

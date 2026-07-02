@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Calendar, MapPin, Droplets, Sparkles, type LucideIcon } from "lucide-react";
-import { howItWorksSteps } from "@/lib/config/content";
+import { useSiteContent } from "@/lib/content/site-content-context";
 import { usePrefersReducedMotion } from "@/lib/hooks/use-prefers-reduced-motion";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -14,6 +14,7 @@ const iconMap: Record<string, LucideIcon> = {
 
 export function HowItWorks() {
   const reducedMotion = usePrefersReducedMotion();
+  const { howItWorksSteps, homepage } = useSiteContent();
 
   return (
     <section
@@ -28,10 +29,10 @@ export function HowItWorks() {
               id="how-it-works-heading"
               className="text-3xl font-bold text-zinc-900 sm:text-4xl"
             >
-              How It Works
+              {homepage.sections.howItWorks.title}
             </h2>
             <p className="mt-3 text-zinc-600">
-              Four simple steps to cleaner, fresher bins
+              {homepage.sections.howItWorks.subtitle}
             </p>
           </div>
 
