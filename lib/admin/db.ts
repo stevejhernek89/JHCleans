@@ -21,7 +21,7 @@ export function isSupabaseStoreEnabled(): boolean {
 
 let client: SupabaseClient | null = null;
 
-function getSupabaseClient(): SupabaseClient {
+export function getSupabaseClient(): SupabaseClient {
   const url = getSupabaseUrl();
   const key = getSupabaseServiceKey();
   if (!url || !key) {

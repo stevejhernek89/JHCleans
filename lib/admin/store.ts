@@ -1,6 +1,10 @@
 import { promises as fs } from "fs";
 import path from "path";
 import {
+  readBusinessInfoFromSupabase,
+  writeBusinessInfoToSupabase,
+} from "./business-info-db";
+import {
   isSupabaseStoreEnabled,
   readStoreFromSupabase,
   writeStoreToSupabase,
@@ -167,16 +171,37 @@ export async function getAdminStore(): Promise<AdminStore> {
 
 export async function getSiteContentOverrides(): Promise<Partial<SiteContent> | null> {
   const store = await readStore();
-  return store.siteContentOverrides ?? null;
+  const overrides = store.siteContentOverrides ?? null;
+
+  if (!isSupabaseStoreEnabled()) {
+    return overrides;
+  }
+
+  const business = await readBusinessInfoFromSupabase();
+  if (!business) {
+    return overrides;
+  }
+
+  return {
+    ...overrides,
+    business,
+    updatedAt: overrides?.updatedAt ?? new Date().toISOString(),
+  };
 }
 
 export async function saveSiteContentOverrides(
   overrides: Partial<SiteContent>
 ): Promise<Partial<SiteContent>> {
   const store = await readStore();
+  const updatedAt = new Date().toISOString();
+
+  if (overrides.business && isSupabaseStoreEnabled()) {
+    await writeBusinessInfoToSupabase(overrides.business);
+  }
+
   store.siteContentOverrides = {
     ...overrides,
-    updatedAt: new Date().toISOString(),
+    updatedAt,
   };
   await writeStore(store);
   return store.siteContentOverrides;
@@ -286,6 +311,7 @@ export async function seedDemoData(): Promise<void> {
   ];
 
   await writeStore({
+    ...store,
     jobs: demoJobs,
     transactions: demoTransactions,
   });

@@ -62,9 +62,16 @@ export async function saveSiteContentSectionAction<K extends SiteContentSection>
     };
   } catch (error) {
     console.error("Failed to save site content:", error);
+    const message =
+      error instanceof Error &&
+      error.message.includes("Supabase is not configured for production")
+        ? "Database not configured. Add SUPABASE_URL and SUPABASE_SERVICE_KEY to your environment."
+        : error instanceof Error && error.message.includes("Supabase admin store is not configured")
+          ? "Add SUPABASE_SERVICE_KEY to .env.local (Supabase Dashboard → API → service_role key)."
+          : "Failed to save content. Please try again.";
     return {
       success: false,
-      message: "Failed to save content. Please try again.",
+      message,
     };
   }
 }

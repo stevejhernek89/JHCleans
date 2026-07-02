@@ -542,7 +542,7 @@ export function ContentEditor() {
       try {
         const result = await getSiteContentAction();
         setContent(result);
-        setDraft((current) => current ?? result[activeSectionRef.current]);
+        setDraft(result[activeSectionRef.current]);
       } catch {
         setMessage("Failed to load content. Please refresh and try again.");
       }
