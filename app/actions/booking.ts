@@ -1,5 +1,6 @@
 "use server";
 
+import { createJobFromBooking } from "@/app/actions/admin";
 import { bookingSchema } from "@/lib/validations/schemas";
 import { submitBooking } from "@/lib/email/send";
 
@@ -16,6 +17,12 @@ export async function submitBookingAction(formData: unknown) {
     }
 
     const result = await submitBooking(parsed.data);
+
+    try {
+      await createJobFromBooking(parsed.data, result.referenceId);
+    } catch (storeError) {
+      console.error("Failed to create admin job from booking:", storeError);
+    }
 
     return {
       success: true,
