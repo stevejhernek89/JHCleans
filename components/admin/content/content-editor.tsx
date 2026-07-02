@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { useAdminSidebar } from "@/components/admin/admin-shell";
 import { Button } from "@/components/ui/button";
@@ -144,6 +144,14 @@ function ListEditor<T>({
   onChange: (items: T[]) => void;
   createItem: () => T;
 }) {
+  if (!Array.isArray(items)) {
+    return (
+      <p className="text-sm text-destructive">
+        This section has invalid data. Use Reset to Defaults or reload the page.
+      </p>
+    );
+  }
+
   return (
     <div className="space-y-4">
       {items.map((item, index) => (
@@ -526,25 +534,32 @@ export function ContentEditor() {
   const [draft, setDraft] = useState<SiteContent[SiteContentSection] | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const activeSectionRef = useRef<SiteContentSection>(activeSection);
+  activeSectionRef.current = activeSection;
 
   const loadContent = useCallback(() => {
     startTransition(async () => {
-      const result = await getSiteContentAction();
-      setContent(result);
-      setDraft(result[activeSection]);
+      try {
+        const result = await getSiteContentAction();
+        setContent(result);
+        setDraft((current) => current ?? result[activeSectionRef.current]);
+      } catch {
+        setMessage("Failed to load content. Please refresh and try again.");
+      }
     });
-  }, [activeSection]);
+  }, []);
 
   useEffect(() => {
     loadContent();
   }, [loadContent]);
 
-  useEffect(() => {
+  const selectSection = (section: SiteContentSection) => {
     if (content) {
-      setDraft(content[activeSection]);
-      setMessage(null);
+      setDraft(content[section]);
     }
-  }, [activeSection, content]);
+    setActiveSection(section);
+    setMessage(null);
+  };
 
   const handleSave = () => {
     if (!draft) return;
@@ -587,7 +602,7 @@ export function ContentEditor() {
               <button
                 key={section.id}
                 type="button"
-                onClick={() => setActiveSection(section.id)}
+                onClick={() => selectSection(section.id)}
                 className={cn(
                   "w-full rounded-lg px-3 py-2 text-left text-sm transition-colors",
                   activeSection === section.id
