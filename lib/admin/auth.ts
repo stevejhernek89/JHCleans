@@ -17,7 +17,7 @@ function getSessionSecret(): string {
 }
 
 export function getAdminPassword(): string {
-  return process.env.ADMIN_PASSWORD ?? "admin123";
+  return (process.env.ADMIN_PASSWORD ?? "admin123").trim();
 }
 
 export async function createAdminSession(): Promise<void> {
@@ -65,7 +65,7 @@ export async function isAdminAuthenticated(): Promise<boolean> {
 
 export function verifyAdminPassword(password: string): boolean {
   const expected = getAdminPassword();
-  const passwordBuffer = Buffer.from(password);
+  const passwordBuffer = Buffer.from(password.trim());
   const expectedBuffer = Buffer.from(expected);
 
   if (passwordBuffer.length !== expectedBuffer.length) return false;
