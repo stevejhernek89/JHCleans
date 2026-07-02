@@ -1,8 +1,20 @@
 import { promises as fs } from "fs";
 import path from "path";
+import {
+  isSupabaseStoreEnabled,
+  readStoreFromSupabase,
+  writeStoreToSupabase,
+} from "./db";
 import type { AdminStore, Job, Transaction } from "./types";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+function getDataDir(): string {
+  if (process.env.VERCEL) {
+    return path.join("/tmp", "jhcleans-admin");
+  }
+  return path.join(process.cwd(), "data");
+}
+
+const DATA_DIR = getDataDir();
 const STORE_FILE = path.join(DATA_DIR, "admin-store.json");
 
 const defaultStore: AdminStore = {
@@ -20,15 +32,30 @@ async function ensureStore(): Promise<void> {
   }
 }
 
-async function readStore(): Promise<AdminStore> {
+async function readStoreFromFile(): Promise<AdminStore> {
   await ensureStore();
   const raw = await fs.readFile(STORE_FILE, "utf-8");
   return JSON.parse(raw) as AdminStore;
 }
 
-async function writeStore(store: AdminStore): Promise<void> {
+async function writeStoreToFile(store: AdminStore): Promise<void> {
   await ensureStore();
   await fs.writeFile(STORE_FILE, JSON.stringify(store, null, 2), "utf-8");
+}
+
+async function readStore(): Promise<AdminStore> {
+  if (isSupabaseStoreEnabled()) {
+    return readStoreFromSupabase();
+  }
+  return readStoreFromFile();
+}
+
+async function writeStore(store: AdminStore): Promise<void> {
+  if (isSupabaseStoreEnabled()) {
+    await writeStoreToSupabase(store);
+    return;
+  }
+  await writeStoreToFile(store);
 }
 
 export function generateId(prefix: string): string {
