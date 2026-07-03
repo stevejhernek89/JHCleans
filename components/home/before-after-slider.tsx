@@ -10,7 +10,6 @@ import { useSiteContent } from "@/lib/content/site-content-context";
 
 export function BeforeAfterSlider() {
   const { homepage } = useSiteContent();
-  const pricingPreviewPlans = homepage.pricingPreview;
   const { beforeAfter } = homepage.sections;
   const containerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState(50);
@@ -184,8 +183,8 @@ export function BeforeAfterSlider() {
 }
 
 function PricingPreview() {
-  const { homepage } = useSiteContent();
-  const pricingPreviewPlans = homepage.pricingPreview;
+  const { pricing } = useSiteContent();
+  const displayPlans = pricing.plans;
 
   return (
     <div aria-labelledby="pricing-preview-heading">
@@ -200,9 +199,9 @@ function PricingPreview() {
         </div>
 
         <div className="grid gap-4 p-4 sm:grid-cols-3 sm:p-5">
-          {pricingPreviewPlans.map((plan) => (
+          {displayPlans.map((plan) => (
             <article
-              key={plan.name}
+              key={plan.id}
               className={cn(
                 "relative flex flex-col rounded-xl bg-white p-4 text-center shadow-lg",
                 plan.popular && "ring-2 ring-primary sm:-mt-2 sm:mb-2 sm:scale-[1.03]"
@@ -220,28 +219,26 @@ function PricingPreview() {
               </p>
 
               <div className="my-4">
-                <p className="text-2xl font-bold text-[#0a1628]">{plan.price}</p>
+                <p className="text-2xl font-bold text-[#0a1628]">{plan.priceLabel}</p>
                 <p className="mt-1 text-[10px] text-zinc-400">
-                  {plan.note || "Contact for pricing details"}
+                  {plan.priceNote || "Contact for pricing details"}
                 </p>
               </div>
 
               <ul className="mb-4 space-y-1.5 text-left" role="list">
-                {["Deep clean & sanitize", "Deodorizing treatment", "Curbside service"].map(
-                  (feature) => (
-                    <li
-                      key={feature}
-                      className="flex items-center gap-1.5 text-[10px] text-zinc-600"
-                    >
-                      <Check className="h-3 w-3 shrink-0 text-primary" aria-hidden="true" />
-                      {feature}
-                    </li>
-                  )
-                )}
+                {plan.features.map((feature) => (
+                  <li
+                    key={feature}
+                    className="flex items-center gap-1.5 text-[10px] text-zinc-600"
+                  >
+                    <Check className="h-3 w-3 shrink-0 text-primary" aria-hidden="true" />
+                    {feature}
+                  </li>
+                ))}
               </ul>
 
               <Link
-                href="/book"
+                href={plan.ctaHref}
                 className={cn(
                   "mt-auto rounded-lg px-3 py-2 text-xs font-semibold transition-colors",
                   plan.popular
@@ -249,7 +246,7 @@ function PricingPreview() {
                     : "bg-[#0a1628] text-white hover:bg-[#0a1628]/90"
                 )}
               >
-                {plan.popular ? "Choose Plan" : "Book Now"}
+                {plan.ctaLabel}
               </Link>
             </article>
           ))}

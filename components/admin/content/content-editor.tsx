@@ -274,19 +274,11 @@ function JsonSectionEditor({
         <Card>
           <CardHeader><CardTitle>Homepage Pricing Preview</CardTitle></CardHeader>
           <CardContent>
-            <ListEditor
-              items={homepage.pricingPreview}
-              onChange={(items) => onChange({ ...homepage, pricingPreview: items })}
-              createItem={() => ({ name: "New Plan", description: "", price: "$0", note: "per bin", popular: false })}
-              renderItem={(item, _index, update) => (
-                <div className="grid gap-3 md:grid-cols-2">
-                  <Field helpKey="homepage.pricingPreview.name" label="Name" value={item.name} onChange={(v) => update({ ...item, name: v })} />
-                  <Field helpKey="homepage.pricingPreview.price" label="Price" value={item.price} onChange={(v) => update({ ...item, price: v })} />
-                  <Field helpKey="homepage.pricingPreview.description" label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} />
-                  <Field helpKey="homepage.pricingPreview.note" label="Note" value={item.note} onChange={(v) => update({ ...item, note: v })} />
-                </div>
-              )}
-            />
+            <p className="text-sm text-muted-foreground">
+              The pricing cards beside the before/after slider use the same plans as the{" "}
+              <strong>Pricing Plans</strong> content section. Edit plans there to update both
+              the homepage preview and the full pricing section.
+            </p>
           </CardContent>
         </Card>
       </div>
