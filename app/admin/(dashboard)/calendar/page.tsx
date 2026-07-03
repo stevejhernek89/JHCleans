@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, useTransition } from "react";
+import { GuideLink } from "@/components/admin/admin-guide";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { JobCalendar } from "@/components/admin/job-calendar";
 import { getJobsAction } from "@/app/actions/admin";
@@ -29,6 +30,7 @@ export default function AdminCalendarPage() {
         title="Job Calendar"
         description="Schedule, reschedule, and manage cleaning jobs. Drag events to move them."
         onMenuClick={openSidebar}
+        action={<GuideLink sectionId="calendar" />}
       />
       <div className="p-4 sm:p-6">
         <JobCalendar jobs={jobs} onRefresh={loadJobs} />

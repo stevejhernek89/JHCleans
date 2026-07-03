@@ -39,6 +39,8 @@ import {
   deleteTransactionAction,
   saveTransactionAction,
 } from "@/app/actions/admin";
+import { getFieldHelp } from "@/lib/admin/field-help";
+import { FieldHelpText } from "@/components/admin/field-help-text";
 import type { Transaction } from "@/lib/admin/types";
 import { EXPENSE_CATEGORY_LABELS } from "@/lib/admin/types";
 import {
@@ -297,6 +299,12 @@ export function FinanceDashboard({
   );
 }
 
+function TxFieldHelp({ helpKey }: { helpKey: string }) {
+  const help = getFieldHelp(helpKey);
+  if (!help) return null;
+  return <FieldHelpText help={help} />;
+}
+
 function TransactionDialog({
   open,
   onOpenChange,
@@ -397,6 +405,7 @@ function TransactionDialog({
                   <SelectItem value="expense">Expense</SelectItem>
                 </SelectContent>
               </Select>
+              <TxFieldHelp helpKey="transaction.type" />
             </div>
 
             {type === "expense" && (
@@ -419,6 +428,7 @@ function TransactionDialog({
                     ))}
                   </SelectContent>
                 </Select>
+                <TxFieldHelp helpKey="transaction.category" />
               </div>
             )}
 
@@ -431,6 +441,7 @@ function TransactionDialog({
                 step="0.01"
                 {...register("amount", { valueAsNumber: true })}
               />
+              <TxFieldHelp helpKey="transaction.amount" />
               {errors.amount && (
                 <p className="text-xs text-destructive" role="alert">{errors.amount.message}</p>
               )}
@@ -439,11 +450,13 @@ function TransactionDialog({
             <div className="space-y-2">
               <Label htmlFor="date">Date</Label>
               <Input id="date" type="date" {...register("date")} />
+              <TxFieldHelp helpKey="transaction.date" />
             </div>
 
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="description">Description</Label>
               <Input id="description" {...register("description")} />
+              <TxFieldHelp helpKey="transaction.description" />
               {errors.description && (
                 <p className="text-xs text-destructive" role="alert">{errors.description.message}</p>
               )}
@@ -453,6 +466,7 @@ function TransactionDialog({
               <div className="space-y-2 sm:col-span-2">
                 <Label htmlFor="vendor">Vendor (optional)</Label>
                 <Input id="vendor" placeholder="Supplier name" {...register("vendor")} />
+                <TxFieldHelp helpKey="transaction.vendor" />
               </div>
             )}
           </div>

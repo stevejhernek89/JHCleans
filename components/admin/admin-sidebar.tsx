@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BookOpen,
+  Bot,
   CalendarDays,
   DollarSign,
   FileText,
@@ -19,6 +21,8 @@ const navItems = [
   { href: "/admin/content", label: "Site Content", icon: FileText },
   { href: "/admin/calendar", label: "Calendar", icon: CalendarDays },
   { href: "/admin/finances", label: "Finances", icon: DollarSign },
+  { href: "/admin/guide", label: "Field Guide", icon: BookOpen },
+  { href: "/admin/consultant", label: "AI Consultant", icon: Bot },
 ];
 
 export function AdminSidebar() {

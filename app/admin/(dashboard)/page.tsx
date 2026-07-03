@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, Inbox } from "lucide-react";
+import { GuideLink } from "@/components/admin/admin-guide";
 import { AdminHeader } from "@/components/admin/admin-header";
 import { StatsCards } from "@/components/admin/stats-cards";
 import { JobStatusBadge } from "@/components/admin/job-calendar";
@@ -46,12 +47,15 @@ export default function AdminDashboardPage() {
         description="Overview of jobs, schedule, and finances."
         onMenuClick={openSidebar}
         action={
-          <Button asChild size="sm">
-            <Link href="/admin/calendar">
-              <CalendarDays className="h-4 w-4" />
-              Open Calendar
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <GuideLink sectionId="dashboard" />
+            <Button asChild size="sm">
+              <Link href="/admin/calendar">
+                <CalendarDays className="h-4 w-4" />
+                Open Calendar
+              </Link>
+            </Button>
+          </div>
         }
       />
 

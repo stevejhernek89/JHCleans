@@ -14,6 +14,10 @@ import {
   saveSiteContentSectionAction,
 } from "@/app/actions/content";
 import type { SiteContent, SiteContentSection } from "@/lib/content/types";
+import { FieldHelpText } from "@/components/admin/field-help-text";
+import { GuideLink } from "@/components/admin/admin-guide";
+import { CONTENT_SECTION_GUIDE_IDS } from "@/lib/admin/guide-content";
+import { getFieldHelp } from "@/lib/admin/field-help";
 import { cn } from "@/lib/utils";
 
 const sections: { id: SiteContentSection; label: string }[] = [
@@ -35,15 +39,19 @@ const sections: { id: SiteContentSection; label: string }[] = [
 
 function Field({
   label,
+  helpKey,
   value,
   onChange,
   multiline = false,
 }: {
   label: string;
+  helpKey: string;
   value: string;
   onChange: (value: string) => void;
   multiline?: boolean;
 }) {
+  const help = getFieldHelp(helpKey);
+
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
@@ -52,6 +60,7 @@ function Field({
       ) : (
         <Input value={value} onChange={(e) => onChange(e.target.value)} />
       )}
+      {help && <FieldHelpText help={help} />}
     </div>
   );
 }
@@ -99,31 +108,33 @@ function BusinessEditor({
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <Field label="Business Name" value={content.name} onChange={(v) => update(["name"], v)} />
-      <Field label="Short Name" value={content.shortName} onChange={(v) => update(["shortName"], v)} />
-      <Field label="Tagline" value={content.tagline} onChange={(v) => update(["tagline"], v)} />
+      <Field helpKey="business.name" label="Business Name" value={content.name} onChange={(v) => update(["name"], v)} />
+      <Field helpKey="business.shortName" label="Short Name" value={content.shortName} onChange={(v) => update(["shortName"], v)} />
+      <Field helpKey="business.tagline" label="Tagline" value={content.tagline} onChange={(v) => update(["tagline"], v)} />
       <Field
+        helpKey="business.description"
         label="Description"
         value={content.description}
         onChange={(v) => update(["description"], v)}
         multiline
       />
-      <Field label="Phone" value={content.contact.phone} onChange={(v) => update(["contact", "phone"], v)} />
-      <Field label="Phone (tel link)" value={content.contact.phoneTel} onChange={(v) => update(["contact", "phoneTel"], v)} />
-      <Field label="Email" value={content.contact.email} onChange={(v) => update(["contact", "email"], v)} />
-      <Field label="Address Display" value={content.contact.address.display} onChange={(v) => update(["contact", "address", "display"], v)} />
-      <Field label="City" value={content.contact.address.city} onChange={(v) => update(["contact", "address", "city"], v)} />
-      <Field label="State" value={content.contact.address.state} onChange={(v) => update(["contact", "address", "state"], v)} />
-      <Field label="Weekday Hours" value={content.hours.weekdays} onChange={(v) => update(["hours", "weekdays"], v)} />
-      <Field label="Saturday Hours" value={content.hours.saturday} onChange={(v) => update(["hours", "saturday"], v)} />
-      <Field label="Sunday Hours" value={content.hours.sunday} onChange={(v) => update(["hours", "sunday"], v)} />
-      <Field label="Hours Note" value={content.hours.note} onChange={(v) => update(["hours", "note"], v)} />
-      <Field label="Facebook URL" value={content.social.facebook} onChange={(v) => update(["social", "facebook"], v)} />
-      <Field label="Instagram URL" value={content.social.instagram} onChange={(v) => update(["social", "instagram"], v)} />
-      <Field label="TikTok URL" value={content.social.tiktok} onChange={(v) => update(["social", "tiktok"], v)} />
-      <Field label="Yelp URL" value={content.social.yelp} onChange={(v) => update(["social", "yelp"], v)} />
-      <Field label="Google URL" value={content.social.google} onChange={(v) => update(["social", "google"], v)} />
+      <Field helpKey="business.contact.phone" label="Phone" value={content.contact.phone} onChange={(v) => update(["contact", "phone"], v)} />
+      <Field helpKey="business.contact.phoneTel" label="Phone (tel link)" value={content.contact.phoneTel} onChange={(v) => update(["contact", "phoneTel"], v)} />
+      <Field helpKey="business.contact.email" label="Email" value={content.contact.email} onChange={(v) => update(["contact", "email"], v)} />
+      <Field helpKey="business.contact.address.display" label="Address Display" value={content.contact.address.display} onChange={(v) => update(["contact", "address", "display"], v)} />
+      <Field helpKey="business.contact.address.city" label="City" value={content.contact.address.city} onChange={(v) => update(["contact", "address", "city"], v)} />
+      <Field helpKey="business.contact.address.state" label="State" value={content.contact.address.state} onChange={(v) => update(["contact", "address", "state"], v)} />
+      <Field helpKey="business.hours.weekdays" label="Weekday Hours" value={content.hours.weekdays} onChange={(v) => update(["hours", "weekdays"], v)} />
+      <Field helpKey="business.hours.saturday" label="Saturday Hours" value={content.hours.saturday} onChange={(v) => update(["hours", "saturday"], v)} />
+      <Field helpKey="business.hours.sunday" label="Sunday Hours" value={content.hours.sunday} onChange={(v) => update(["hours", "sunday"], v)} />
+      <Field helpKey="business.hours.note" label="Hours Note" value={content.hours.note} onChange={(v) => update(["hours", "note"], v)} />
+      <Field helpKey="business.social.facebook" label="Facebook URL" value={content.social.facebook} onChange={(v) => update(["social", "facebook"], v)} />
+      <Field helpKey="business.social.instagram" label="Instagram URL" value={content.social.instagram} onChange={(v) => update(["social", "instagram"], v)} />
+      <Field helpKey="business.social.tiktok" label="TikTok URL" value={content.social.tiktok} onChange={(v) => update(["social", "tiktok"], v)} />
+      <Field helpKey="business.social.yelp" label="Yelp URL" value={content.social.yelp} onChange={(v) => update(["social", "yelp"], v)} />
+      <Field helpKey="business.social.google" label="Google URL" value={content.social.google} onChange={(v) => update(["social", "google"], v)} />
       <Field
+        helpKey="business.claims.satisfactionGuarantee"
         label="Satisfaction Guarantee"
         value={content.claims.satisfactionGuarantee}
         onChange={(v) => update(["claims", "satisfactionGuarantee"], v)}
@@ -203,8 +214,8 @@ function JsonSectionEditor({
         createItem={() => ({ label: "New Link", href: "/" })}
         renderItem={(item, _index, update) => (
           <div className="grid gap-3 md:grid-cols-2">
-            <Field label="Label" value={item.label} onChange={(v) => update({ ...item, label: v })} />
-            <Field label="URL" value={item.href} onChange={(v) => update({ ...item, href: v })} />
+            <Field helpKey="navigation.label" label="Label" value={item.label} onChange={(v) => update({ ...item, label: v })} />
+            <Field helpKey="navigation.href" label="URL" value={item.href} onChange={(v) => update({ ...item, href: v })} />
           </div>
         )}
       />
@@ -215,10 +226,10 @@ function JsonSectionEditor({
     const layout = value as SiteContent["layout"];
     return (
       <div className="grid gap-4 md:grid-cols-2">
-        <Field label="Header CTA" value={layout.headerCta} onChange={(v) => onChange({ ...layout, headerCta: v })} />
-        <Field label="Mobile Quote CTA" value={layout.mobileQuoteCta} onChange={(v) => onChange({ ...layout, mobileQuoteCta: v })} />
-        <Field label="Mobile Book CTA" value={layout.mobileBookCta} onChange={(v) => onChange({ ...layout, mobileBookCta: v })} />
-        <Field label="Footer Book Label" value={layout.footerBookLabel} onChange={(v) => onChange({ ...layout, footerBookLabel: v })} />
+        <Field helpKey="layout.headerCta" label="Header CTA" value={layout.headerCta} onChange={(v) => onChange({ ...layout, headerCta: v })} />
+        <Field helpKey="layout.mobileQuoteCta" label="Mobile Quote CTA" value={layout.mobileQuoteCta} onChange={(v) => onChange({ ...layout, mobileQuoteCta: v })} />
+        <Field helpKey="layout.mobileBookCta" label="Mobile Book CTA" value={layout.mobileBookCta} onChange={(v) => onChange({ ...layout, mobileBookCta: v })} />
+        <Field helpKey="layout.footerBookLabel" label="Footer Book Label" value={layout.footerBookLabel} onChange={(v) => onChange({ ...layout, footerBookLabel: v })} />
       </div>
     );
   }
@@ -230,34 +241,34 @@ function JsonSectionEditor({
         <Card>
           <CardHeader><CardTitle>Hero</CardTitle></CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-2">
-            <Field label="Badge" value={homepage.hero.badge} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, badge: v } })} />
-            <Field label="Headline" value={homepage.hero.headline} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, headline: v } })} />
-            <Field label="Headline Accent" value={homepage.hero.headlineAccent} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, headlineAccent: v } })} />
-            <Field label="Primary CTA" value={homepage.hero.primaryCta} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, primaryCta: v } })} />
-            <Field label="Secondary CTA" value={homepage.hero.secondaryCta} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, secondaryCta: v } })} />
-            <Field label="Trust Indicators (one per line)" value={homepage.hero.trustIndicators.join("\n")} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, trustIndicators: v.split("\n").filter(Boolean) } })} multiline />
+            <Field helpKey="homepage.hero.badge" label="Badge" value={homepage.hero.badge} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, badge: v } })} />
+            <Field helpKey="homepage.hero.headline" label="Headline" value={homepage.hero.headline} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, headline: v } })} />
+            <Field helpKey="homepage.hero.headlineAccent" label="Headline Accent" value={homepage.hero.headlineAccent} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, headlineAccent: v } })} />
+            <Field helpKey="homepage.hero.primaryCta" label="Primary CTA" value={homepage.hero.primaryCta} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, primaryCta: v } })} />
+            <Field helpKey="homepage.hero.secondaryCta" label="Secondary CTA" value={homepage.hero.secondaryCta} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, secondaryCta: v } })} />
+            <Field helpKey="homepage.hero.trustIndicators" label="Trust Indicators (one per line)" value={homepage.hero.trustIndicators.join("\n")} onChange={(v) => onChange({ ...homepage, hero: { ...homepage.hero, trustIndicators: v.split("\n").filter(Boolean) } })} multiline />
           </CardContent>
         </Card>
         <Card>
           <CardHeader><CardTitle>Section Headings</CardTitle></CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-2">
-            <Field label="How It Works Title" value={homepage.sections.howItWorks.title} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, howItWorks: { ...homepage.sections.howItWorks, title: v } } })} />
-            <Field label="How It Works Subtitle" value={homepage.sections.howItWorks.subtitle} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, howItWorks: { ...homepage.sections.howItWorks, subtitle: v } } })} />
-            <Field label="Pricing Title" value={homepage.sections.pricing.title} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, pricing: { ...homepage.sections.pricing, title: v } } })} />
-            <Field label="Pricing Subtitle" value={homepage.sections.pricing.subtitle} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, pricing: { ...homepage.sections.pricing, subtitle: v } } })} />
-            <Field label="Testimonials Title" value={homepage.sections.testimonials.title} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, testimonials: { title: v } } })} />
-            <Field label="FAQ Title" value={homepage.sections.faq.title} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, faq: { title: v } } })} />
-            <Field label="Service Area Title" value={homepage.sections.serviceArea.title} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, serviceArea: { ...homepage.sections.serviceArea, title: v } } })} />
-            <Field label="Service Area Subtitle" value={homepage.sections.serviceArea.subtitle} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, serviceArea: { ...homepage.sections.serviceArea, subtitle: v } } })} />
+            <Field helpKey="homepage.sections.howItWorks.title" label="How It Works Title" value={homepage.sections.howItWorks.title} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, howItWorks: { ...homepage.sections.howItWorks, title: v } } })} />
+            <Field helpKey="homepage.sections.howItWorks.subtitle" label="How It Works Subtitle" value={homepage.sections.howItWorks.subtitle} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, howItWorks: { ...homepage.sections.howItWorks, subtitle: v } } })} />
+            <Field helpKey="homepage.sections.pricing.title" label="Pricing Title" value={homepage.sections.pricing.title} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, pricing: { ...homepage.sections.pricing, title: v } } })} />
+            <Field helpKey="homepage.sections.pricing.subtitle" label="Pricing Subtitle" value={homepage.sections.pricing.subtitle} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, pricing: { ...homepage.sections.pricing, subtitle: v } } })} />
+            <Field helpKey="homepage.sections.testimonials.title" label="Testimonials Title" value={homepage.sections.testimonials.title} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, testimonials: { title: v } } })} />
+            <Field helpKey="homepage.sections.faq.title" label="FAQ Title" value={homepage.sections.faq.title} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, faq: { title: v } } })} />
+            <Field helpKey="homepage.sections.serviceArea.title" label="Service Area Title" value={homepage.sections.serviceArea.title} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, serviceArea: { ...homepage.sections.serviceArea, title: v } } })} />
+            <Field helpKey="homepage.sections.serviceArea.subtitle" label="Service Area Subtitle" value={homepage.sections.serviceArea.subtitle} onChange={(v) => onChange({ ...homepage, sections: { ...homepage.sections, serviceArea: { ...homepage.sections.serviceArea, subtitle: v } } })} />
           </CardContent>
         </Card>
         <Card>
           <CardHeader><CardTitle>Final CTA</CardTitle></CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-2">
-            <Field label="Title" value={homepage.finalCta.title} onChange={(v) => onChange({ ...homepage, finalCta: { ...homepage.finalCta, title: v } })} />
-            <Field label="Body" value={homepage.finalCta.body} onChange={(v) => onChange({ ...homepage, finalCta: { ...homepage.finalCta, body: v } })} multiline />
-            <Field label="Primary CTA" value={homepage.finalCta.primaryCta} onChange={(v) => onChange({ ...homepage, finalCta: { ...homepage.finalCta, primaryCta: v } })} />
-            <Field label="Secondary CTA" value={homepage.finalCta.secondaryCta} onChange={(v) => onChange({ ...homepage, finalCta: { ...homepage.finalCta, secondaryCta: v } })} />
+            <Field helpKey="homepage.finalCta.title" label="Title" value={homepage.finalCta.title} onChange={(v) => onChange({ ...homepage, finalCta: { ...homepage.finalCta, title: v } })} />
+            <Field helpKey="homepage.finalCta.body" label="Body" value={homepage.finalCta.body} onChange={(v) => onChange({ ...homepage, finalCta: { ...homepage.finalCta, body: v } })} multiline />
+            <Field helpKey="homepage.finalCta.primaryCta" label="Primary CTA" value={homepage.finalCta.primaryCta} onChange={(v) => onChange({ ...homepage, finalCta: { ...homepage.finalCta, primaryCta: v } })} />
+            <Field helpKey="homepage.finalCta.secondaryCta" label="Secondary CTA" value={homepage.finalCta.secondaryCta} onChange={(v) => onChange({ ...homepage, finalCta: { ...homepage.finalCta, secondaryCta: v } })} />
           </CardContent>
         </Card>
         <Card>
@@ -269,10 +280,10 @@ function JsonSectionEditor({
               createItem={() => ({ name: "New Plan", description: "", price: "$0", note: "", popular: false })}
               renderItem={(item, _index, update) => (
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Name" value={item.name} onChange={(v) => update({ ...item, name: v })} />
-                  <Field label="Price" value={item.price} onChange={(v) => update({ ...item, price: v })} />
-                  <Field label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} />
-                  <Field label="Note" value={item.note} onChange={(v) => update({ ...item, note: v })} />
+                  <Field helpKey="homepage.pricingPreview.name" label="Name" value={item.name} onChange={(v) => update({ ...item, name: v })} />
+                  <Field helpKey="homepage.pricingPreview.price" label="Price" value={item.price} onChange={(v) => update({ ...item, price: v })} />
+                  <Field helpKey="homepage.pricingPreview.description" label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} />
+                  <Field helpKey="homepage.pricingPreview.note" label="Note" value={item.note} onChange={(v) => update({ ...item, note: v })} />
                 </div>
               )}
             />
@@ -286,15 +297,15 @@ function JsonSectionEditor({
     const pages = value as SiteContent["pages"];
     return (
       <div className="grid gap-4 md:grid-cols-2">
-        <Field label="Services Title" value={pages.services.title} onChange={(v) => onChange({ ...pages, services: { ...pages.services, title: v } })} />
-        <Field label="Services Subtitle" value={pages.services.subtitle} onChange={(v) => onChange({ ...pages, services: { ...pages.services, subtitle: v } })} multiline />
-        <Field label="Services CTA Label" value={pages.services.ctaLabel} onChange={(v) => onChange({ ...pages, services: { ...pages.services, ctaLabel: v } })} />
-        <Field label="Contact Title" value={pages.contact.title} onChange={(v) => onChange({ ...pages, contact: { ...pages.contact, title: v } })} />
-        <Field label="Contact Subtitle" value={pages.contact.subtitle} onChange={(v) => onChange({ ...pages, contact: { ...pages.contact, subtitle: v } })} />
-        <Field label="Book Title" value={pages.book.title} onChange={(v) => onChange({ ...pages, book: { ...pages.book, title: v } })} />
-        <Field label="Book Subtitle" value={pages.book.subtitle} onChange={(v) => onChange({ ...pages, book: { ...pages.book, subtitle: v } })} multiline />
-        <Field label="Pricing Quote Title" value={pages.pricing.quoteTitle} onChange={(v) => onChange({ ...pages, pricing: { ...pages.pricing, quoteTitle: v } })} />
-        <Field label="Pricing Quote Subtitle" value={pages.pricing.quoteSubtitle} onChange={(v) => onChange({ ...pages, pricing: { ...pages.pricing, quoteSubtitle: v } })} />
+        <Field helpKey="pages.services.title" label="Services Title" value={pages.services.title} onChange={(v) => onChange({ ...pages, services: { ...pages.services, title: v } })} />
+        <Field helpKey="pages.services.subtitle" label="Services Subtitle" value={pages.services.subtitle} onChange={(v) => onChange({ ...pages, services: { ...pages.services, subtitle: v } })} multiline />
+        <Field helpKey="pages.services.ctaLabel" label="Services CTA Label" value={pages.services.ctaLabel} onChange={(v) => onChange({ ...pages, services: { ...pages.services, ctaLabel: v } })} />
+        <Field helpKey="pages.contact.title" label="Contact Title" value={pages.contact.title} onChange={(v) => onChange({ ...pages, contact: { ...pages.contact, title: v } })} />
+        <Field helpKey="pages.contact.subtitle" label="Contact Subtitle" value={pages.contact.subtitle} onChange={(v) => onChange({ ...pages, contact: { ...pages.contact, subtitle: v } })} />
+        <Field helpKey="pages.book.title" label="Book Title" value={pages.book.title} onChange={(v) => onChange({ ...pages, book: { ...pages.book, title: v } })} />
+        <Field helpKey="pages.book.subtitle" label="Book Subtitle" value={pages.book.subtitle} onChange={(v) => onChange({ ...pages, book: { ...pages.book, subtitle: v } })} multiline />
+        <Field helpKey="pages.pricing.quoteTitle" label="Pricing Quote Title" value={pages.pricing.quoteTitle} onChange={(v) => onChange({ ...pages, pricing: { ...pages.pricing, quoteTitle: v } })} />
+        <Field helpKey="pages.pricing.quoteSubtitle" label="Pricing Quote Subtitle" value={pages.pricing.quoteSubtitle} onChange={(v) => onChange({ ...pages, pricing: { ...pages.pricing, quoteSubtitle: v } })} />
       </div>
     );
   }
@@ -308,9 +319,9 @@ function JsonSectionEditor({
         createItem={() => ({ id: `feature-${Date.now()}`, title: "", description: "", icon: "sparkles" })}
         renderItem={(item, _index, update) => (
           <div className="grid gap-3 md:grid-cols-2">
-            <Field label="Title" value={item.title} onChange={(v) => update({ ...item, title: v })} />
-            <Field label="Icon" value={item.icon} onChange={(v) => update({ ...item, icon: v })} />
-            <Field label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
+            <Field helpKey="features.title" label="Title" value={item.title} onChange={(v) => update({ ...item, title: v })} />
+            <Field helpKey="features.icon" label="Icon" value={item.icon} onChange={(v) => update({ ...item, icon: v })} />
+            <Field helpKey="features.description" label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
           </div>
         )}
       />
@@ -326,9 +337,9 @@ function JsonSectionEditor({
         createItem={() => ({ step: items.length + 1, title: "", description: "", icon: "calendar" })}
         renderItem={(item, _index, update) => (
           <div className="grid gap-3 md:grid-cols-2">
-            <Field label="Title" value={item.title} onChange={(v) => update({ ...item, title: v })} />
-            <Field label="Step Number" value={String(item.step)} onChange={(v) => update({ ...item, step: Number(v) || 1 })} />
-            <Field label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
+            <Field helpKey="howItWorksSteps.title" label="Title" value={item.title} onChange={(v) => update({ ...item, title: v })} />
+            <Field helpKey="howItWorksSteps.step" label="Step Number" value={String(item.step)} onChange={(v) => update({ ...item, step: Number(v) || 1 })} />
+            <Field helpKey="howItWorksSteps.description" label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
           </div>
         )}
       />
@@ -340,8 +351,8 @@ function JsonSectionEditor({
     return (
       <div className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
-          <Field label="Recurring Savings Label" value={pricing.recurringSavingsLabel} onChange={(v) => onChange({ ...pricing, recurringSavingsLabel: v })} />
-          <Field label="Savings Percent" value={pricing.savingsPercent?.toString() ?? ""} onChange={(v) => onChange({ ...pricing, savingsPercent: v ? Number(v) : null })} />
+          <Field helpKey="pricing.recurringSavingsLabel" label="Recurring Savings Label" value={pricing.recurringSavingsLabel} onChange={(v) => onChange({ ...pricing, recurringSavingsLabel: v })} />
+          <Field helpKey="pricing.savingsPercent" label="Savings Percent" value={pricing.savingsPercent?.toString() ?? ""} onChange={(v) => onChange({ ...pricing, savingsPercent: v ? Number(v) : null })} />
         </div>
         <ListEditor
           items={pricing.plans}
@@ -359,13 +370,13 @@ function JsonSectionEditor({
           })}
           renderItem={(item, _index, update) => (
             <div className="grid gap-3 md:grid-cols-2">
-              <Field label="Name" value={item.name} onChange={(v) => update({ ...item, name: v })} />
-              <Field label="Price Label" value={item.priceLabel} onChange={(v) => update({ ...item, priceLabel: v })} />
-              <Field label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
-              <Field label="Price Note" value={item.priceNote ?? ""} onChange={(v) => update({ ...item, priceNote: v })} />
-              <Field label="CTA Label" value={item.ctaLabel} onChange={(v) => update({ ...item, ctaLabel: v })} />
-              <Field label="CTA Link" value={item.ctaHref} onChange={(v) => update({ ...item, ctaHref: v })} />
-              <Field label="Features (one per line)" value={item.features.join("\n")} onChange={(v) => update({ ...item, features: v.split("\n").filter(Boolean) })} multiline />
+              <Field helpKey="pricing.plans.name" label="Name" value={item.name} onChange={(v) => update({ ...item, name: v })} />
+              <Field helpKey="pricing.plans.priceLabel" label="Price Label" value={item.priceLabel} onChange={(v) => update({ ...item, priceLabel: v })} />
+              <Field helpKey="pricing.plans.description" label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
+              <Field helpKey="pricing.plans.priceNote" label="Price Note" value={item.priceNote ?? ""} onChange={(v) => update({ ...item, priceNote: v })} />
+              <Field helpKey="pricing.plans.ctaLabel" label="CTA Label" value={item.ctaLabel} onChange={(v) => update({ ...item, ctaLabel: v })} />
+              <Field helpKey="pricing.plans.ctaHref" label="CTA Link" value={item.ctaHref} onChange={(v) => update({ ...item, ctaHref: v })} />
+              <Field helpKey="pricing.plans.features" label="Features (one per line)" value={item.features.join("\n")} onChange={(v) => update({ ...item, features: v.split("\n").filter(Boolean) })} multiline />
             </div>
           )}
         />
@@ -390,12 +401,12 @@ function JsonSectionEditor({
         })}
         renderItem={(item, _index, update) => (
           <div className="grid gap-3 md:grid-cols-2">
-            <Field label="Name" value={item.name} onChange={(v) => update({ ...item, name: v })} />
-            <Field label="Price Label" value={item.priceLabel} onChange={(v) => update({ ...item, priceLabel: v })} />
-            <Field label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
-            <Field label="Duration" value={item.duration} onChange={(v) => update({ ...item, duration: v })} />
-            <Field label="Booking Link" value={item.href} onChange={(v) => update({ ...item, href: v })} />
-            <Field label="Included (one per line)" value={item.included.join("\n")} onChange={(v) => update({ ...item, included: v.split("\n").filter(Boolean) })} multiline />
+            <Field helpKey="services.name" label="Name" value={item.name} onChange={(v) => update({ ...item, name: v })} />
+            <Field helpKey="services.priceLabel" label="Price Label" value={item.priceLabel} onChange={(v) => update({ ...item, priceLabel: v })} />
+            <Field helpKey="services.description" label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
+            <Field helpKey="services.duration" label="Duration" value={item.duration} onChange={(v) => update({ ...item, duration: v })} />
+            <Field helpKey="services.href" label="Booking Link" value={item.href} onChange={(v) => update({ ...item, href: v })} />
+            <Field helpKey="services.included" label="Included (one per line)" value={item.included.join("\n")} onChange={(v) => update({ ...item, included: v.split("\n").filter(Boolean) })} multiline />
           </div>
         )}
       />
@@ -411,8 +422,8 @@ function JsonSectionEditor({
         createItem={() => ({ id: `faq-${Date.now()}`, question: "", answer: "" })}
         renderItem={(item, _index, update) => (
           <div className="space-y-3">
-            <Field label="Question" value={item.question} onChange={(v) => update({ ...item, question: v })} />
-            <Field label="Answer" value={item.answer} onChange={(v) => update({ ...item, answer: v })} multiline />
+            <Field helpKey="faq.question" label="Question" value={item.question} onChange={(v) => update({ ...item, question: v })} />
+            <Field helpKey="faq.answer" label="Answer" value={item.answer} onChange={(v) => update({ ...item, answer: v })} multiline />
           </div>
         )}
       />
@@ -429,9 +440,9 @@ function JsonSectionEditor({
           createItem={() => ({ id: `testimonial-${Date.now()}`, quote: "", author: "", location: "", rating: null })}
           renderItem={(item, _index, update) => (
             <div className="space-y-3">
-              <Field label="Quote" value={item.quote} onChange={(v) => update({ ...item, quote: v })} multiline />
-              <Field label="Author" value={item.author} onChange={(v) => update({ ...item, author: v })} />
-              <Field label="Location" value={item.location} onChange={(v) => update({ ...item, location: v })} />
+              <Field helpKey="testimonials.quote" label="Quote" value={item.quote} onChange={(v) => update({ ...item, quote: v })} multiline />
+              <Field helpKey="testimonials.author" label="Author" value={item.author} onChange={(v) => update({ ...item, author: v })} />
+              <Field helpKey="testimonials.location" label="Location" value={item.location} onChange={(v) => update({ ...item, location: v })} />
             </div>
           )}
         />
@@ -443,17 +454,17 @@ function JsonSectionEditor({
     const about = value as SiteContent["about"];
     return (
       <div className="space-y-4">
-        <Field label="Headline" value={about.headline} onChange={(v) => onChange({ ...about, headline: v })} />
-        <Field label="Story (one paragraph per line)" value={about.story.join("\n\n")} onChange={(v) => onChange({ ...about, story: v.split("\n\n").filter(Boolean) })} multiline />
-        <Field label="Founders Note" value={about.foundersNote} onChange={(v) => onChange({ ...about, foundersNote: v })} />
+        <Field helpKey="about.headline" label="Headline" value={about.headline} onChange={(v) => onChange({ ...about, headline: v })} />
+        <Field helpKey="about.story" label="Story (one paragraph per line)" value={about.story.join("\n\n")} onChange={(v) => onChange({ ...about, story: v.split("\n\n").filter(Boolean) })} multiline />
+        <Field helpKey="about.foundersNote" label="Founders Note" value={about.foundersNote} onChange={(v) => onChange({ ...about, foundersNote: v })} />
         <ListEditor
           items={about.values}
           onChange={(values) => onChange({ ...about, values })}
           createItem={() => ({ title: "", description: "" })}
           renderItem={(item, _index, update) => (
             <div className="grid gap-3 md:grid-cols-2">
-              <Field label="Title" value={item.title} onChange={(v) => update({ ...item, title: v })} />
-              <Field label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
+              <Field helpKey="about.values.title" label="Title" value={item.title} onChange={(v) => update({ ...item, title: v })} />
+              <Field helpKey="about.values.description" label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
             </div>
           )}
         />
@@ -465,18 +476,18 @@ function JsonSectionEditor({
     const area = value as SiteContent["serviceArea"];
     return (
       <div className="space-y-4">
-        <Field label="Region Label" value={area.regionLabel} onChange={(v) => onChange({ ...area, regionLabel: v })} />
-        <Field label="Map Note" value={area.mapNote} onChange={(v) => onChange({ ...area, mapNote: v })} multiline />
-        <Field label="Serviced ZIP Codes (comma separated)" value={area.servicedZipCodes.join(", ")} onChange={(v) => onChange({ ...area, servicedZipCodes: v.split(",").map((s) => s.trim()).filter(Boolean) })} />
-        <Field label="Maybe ZIP Codes (comma separated)" value={area.maybeZipCodes.join(", ")} onChange={(v) => onChange({ ...area, maybeZipCodes: v.split(",").map((s) => s.trim()).filter(Boolean) })} />
+        <Field helpKey="serviceArea.regionLabel" label="Region Label" value={area.regionLabel} onChange={(v) => onChange({ ...area, regionLabel: v })} />
+        <Field helpKey="serviceArea.mapNote" label="Map Note" value={area.mapNote} onChange={(v) => onChange({ ...area, mapNote: v })} multiline />
+        <Field helpKey="serviceArea.servicedZipCodes" label="Serviced ZIP Codes (comma separated)" value={area.servicedZipCodes.join(", ")} onChange={(v) => onChange({ ...area, servicedZipCodes: v.split(",").map((s) => s.trim()).filter(Boolean) })} />
+        <Field helpKey="serviceArea.maybeZipCodes" label="Maybe ZIP Codes (comma separated)" value={area.maybeZipCodes.join(", ")} onChange={(v) => onChange({ ...area, maybeZipCodes: v.split(",").map((s) => s.trim()).filter(Boolean) })} />
         <ListEditor
           items={area.featuredCities}
           onChange={(featuredCities) => onChange({ ...area, featuredCities })}
           createItem={() => ({ name: "", state: "" })}
           renderItem={(item, _index, update) => (
             <div className="grid gap-3 md:grid-cols-2">
-              <Field label="City" value={item.name} onChange={(v) => update({ ...item, name: v })} />
-              <Field label="State" value={item.state} onChange={(v) => update({ ...item, state: v })} />
+              <Field helpKey="serviceArea.featuredCity.name" label="City" value={item.name} onChange={(v) => update({ ...item, name: v })} />
+              <Field helpKey="serviceArea.featuredCity.state" label="State" value={item.state} onChange={(v) => update({ ...item, state: v })} />
             </div>
           )}
         />
@@ -493,15 +504,15 @@ function JsonSectionEditor({
           <Card key={key}>
             <CardHeader><CardTitle>{legal[key].title}</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              <Field label="Last Updated" value={legal[key].lastUpdated} onChange={(v) => onChange({ ...legal, [key]: { ...legal[key], lastUpdated: v } })} />
+              <Field helpKey="legal.lastUpdated" label="Last Updated" value={legal[key].lastUpdated} onChange={(v) => onChange({ ...legal, [key]: { ...legal[key], lastUpdated: v } })} />
               <ListEditor
                 items={legal[key].sections}
                 onChange={(sections) => onChange({ ...legal, [key]: { ...legal[key], sections } })}
                 createItem={() => ({ title: "New Section", content: "" })}
                 renderItem={(item, _index, update) => (
                   <div className="space-y-3">
-                    <Field label="Section Title" value={item.title} onChange={(v) => update({ ...item, title: v })} />
-                    <Field label="Section Content" value={item.content} onChange={(v) => update({ ...item, content: v })} multiline />
+                    <Field helpKey="legal.sectionTitle" label="Section Title" value={item.title} onChange={(v) => update({ ...item, title: v })} />
+                    <Field helpKey="legal.sectionContent" label="Section Content" value={item.content} onChange={(v) => update({ ...item, content: v })} multiline />
                   </div>
                 )}
               />
@@ -590,6 +601,9 @@ export function ContentEditor() {
         title="Site Content"
         description="Update pricing, text, FAQs, legal pages, and business info across the website."
         onMenuClick={openSidebar}
+        action={
+          <GuideLink sectionId={CONTENT_SECTION_GUIDE_IDS[activeSection] ?? "site-content"} />
+        }
       />
 
       <div className="flex flex-col gap-6 p-4 lg:flex-row lg:p-6">
@@ -599,19 +613,25 @@ export function ContentEditor() {
           </CardHeader>
           <CardContent className="space-y-1">
             {sections.map((section) => (
-              <button
-                key={section.id}
-                type="button"
-                onClick={() => selectSection(section.id)}
-                className={cn(
-                  "w-full rounded-lg px-3 py-2 text-left text-sm transition-colors",
-                  activeSection === section.id
-                    ? "bg-primary/15 text-primary"
-                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
-                )}
-              >
-                {section.label}
-              </button>
+              <div key={section.id} className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => selectSection(section.id)}
+                  className={cn(
+                    "min-w-0 flex-1 rounded-lg px-3 py-2 text-left text-sm transition-colors",
+                    activeSection === section.id
+                      ? "bg-primary/15 text-primary"
+                      : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                  )}
+                >
+                  {section.label}
+                </button>
+                <GuideLink
+                  sectionId={CONTENT_SECTION_GUIDE_IDS[section.id]}
+                  label=""
+                  className="h-8 w-8 shrink-0 px-0 text-muted-foreground/60 hover:text-primary"
+                />
+              </div>
             ))}
           </CardContent>
         </Card>

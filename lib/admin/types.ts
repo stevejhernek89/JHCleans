@@ -56,10 +56,19 @@ export interface Transaction {
   updatedAt: string;
 }
 
+export interface ConsultantUsage {
+  monthKey: string;
+  spendUsd: number;
+  requestCount: number;
+  recentRequestTimestamps: string[];
+  lastRequestAt: string | null;
+}
+
 export interface AdminStore {
   jobs: Job[];
   transactions: Transaction[];
   siteContentOverrides?: Partial<import("@/lib/content/types").SiteContent> | null;
+  consultantUsage?: ConsultantUsage | null;
 }
 
 export const JOB_STATUS_LABELS: Record<JobStatus, string> = {

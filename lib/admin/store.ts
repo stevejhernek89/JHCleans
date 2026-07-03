@@ -169,6 +169,21 @@ export async function getAdminStore(): Promise<AdminStore> {
   return readStore();
 }
 
+export async function saveAdminStore(store: AdminStore): Promise<void> {
+  await writeStore(store);
+}
+
+export async function recordConsultantUsage(tokens: {
+  promptTokens: number;
+  completionTokens: number;
+}): Promise<AdminStore> {
+  const { applyConsultantUsage } = await import("./consultant-limits");
+  const store = await readStore();
+  const updated = applyConsultantUsage(store, tokens);
+  await writeStore(updated);
+  return updated;
+}
+
 export async function getSiteContentOverrides(): Promise<Partial<SiteContent> | null> {
   const store = await readStore();
   const overrides = store.siteContentOverrides ?? null;

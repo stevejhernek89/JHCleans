@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/dialog";
 import { deleteJobAction, saveJobAction } from "@/app/actions/admin";
 import type { Job, JobStatus } from "@/lib/admin/types";
+import { getFieldHelp } from "@/lib/admin/field-help";
+import { FieldHelpText } from "@/components/admin/field-help-text";
 import { JOB_STATUS_LABELS } from "@/lib/admin/types";
 import { jobSchema, type JobFormData } from "@/lib/validations/admin-schemas";
 import { businessConfig } from "@/lib/config/business";
@@ -45,6 +47,12 @@ function toLocalDatetime(iso: string | undefined): string {
   const offset = date.getTimezoneOffset();
   const local = new Date(date.getTime() - offset * 60 * 1000);
   return local.toISOString().slice(0, 16);
+}
+
+function JobFieldHelp({ helpKey }: { helpKey: string }) {
+  const help = getFieldHelp(helpKey);
+  if (!help) return null;
+  return <FieldHelpText help={help} />;
 }
 
 export function JobFormDialog({
@@ -171,7 +179,7 @@ export function JobFormDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {job ? "Edit Job" : "Schedule New Job"}
@@ -189,6 +197,7 @@ export function JobFormDialog({
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="title">Job Title</Label>
               <Input id="title" placeholder="Smith Residence — Monthly" {...register("title")} />
+              <JobFieldHelp helpKey="job.title" />
               {errors.title && (
                 <p className="text-xs text-destructive" role="alert">{errors.title.message}</p>
               )}
@@ -197,6 +206,7 @@ export function JobFormDialog({
             <div className="space-y-2">
               <Label htmlFor="customerName">Customer Name</Label>
               <Input id="customerName" {...register("customerName")} />
+              <JobFieldHelp helpKey="job.customerName" />
               {errors.customerName && (
                 <p className="text-xs text-destructive" role="alert">{errors.customerName.message}</p>
               )}
@@ -205,6 +215,7 @@ export function JobFormDialog({
             <div className="space-y-2">
               <Label htmlFor="customerPhone">Phone</Label>
               <Input id="customerPhone" type="tel" {...register("customerPhone")} />
+              <JobFieldHelp helpKey="job.customerPhone" />
               {errors.customerPhone && (
                 <p className="text-xs text-destructive" role="alert">{errors.customerPhone.message}</p>
               )}
@@ -213,6 +224,7 @@ export function JobFormDialog({
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="customerEmail">Email</Label>
               <Input id="customerEmail" type="email" {...register("customerEmail")} />
+              <JobFieldHelp helpKey="job.customerEmail" />
               {errors.customerEmail && (
                 <p className="text-xs text-destructive" role="alert">{errors.customerEmail.message}</p>
               )}
@@ -221,21 +233,25 @@ export function JobFormDialog({
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="address">Street Address</Label>
               <Input id="address" {...register("address")} />
+              <JobFieldHelp helpKey="job.address" />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
               <Input id="city" {...register("city")} />
+              <JobFieldHelp helpKey="job.city" />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="state">State</Label>
               <Input id="state" maxLength={2} {...register("state")} />
+              <JobFieldHelp helpKey="job.state" />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="zipCode">ZIP Code</Label>
               <Input id="zipCode" {...register("zipCode")} />
+              <JobFieldHelp helpKey="job.zipCode" />
             </div>
 
             <div className="space-y-2">
@@ -256,6 +272,7 @@ export function JobFormDialog({
                   <SelectItem value="multi-can">Multi-Can</SelectItem>
                 </SelectContent>
               </Select>
+              <JobFieldHelp helpKey="job.serviceType" />
             </div>
 
             <div className="space-y-2">
@@ -266,6 +283,7 @@ export function JobFormDialog({
                 min={0}
                 {...register("garbageCanCount", { valueAsNumber: true })}
               />
+              <JobFieldHelp helpKey="job.garbageCanCount" />
             </div>
 
             <div className="space-y-2">
@@ -276,6 +294,7 @@ export function JobFormDialog({
                 min={0}
                 {...register("recyclingCanCount", { valueAsNumber: true })}
               />
+              <JobFieldHelp helpKey="job.recyclingCanCount" />
             </div>
 
             <div className="space-y-2">
@@ -297,6 +316,7 @@ export function JobFormDialog({
                   ))}
                 </SelectContent>
               </Select>
+              <JobFieldHelp helpKey="job.timeWindow" />
             </div>
 
             <div className="space-y-2">
@@ -316,6 +336,7 @@ export function JobFormDialog({
                   ))}
                 </SelectContent>
               </Select>
+              <JobFieldHelp helpKey="job.status" />
             </div>
 
             <div className="space-y-2">
@@ -325,6 +346,7 @@ export function JobFormDialog({
                 type="datetime-local"
                 {...register("scheduledStart")}
               />
+              <JobFieldHelp helpKey="job.scheduledStart" />
             </div>
 
             <div className="space-y-2">
@@ -334,6 +356,7 @@ export function JobFormDialog({
                 type="datetime-local"
                 {...register("scheduledEnd")}
               />
+              <JobFieldHelp helpKey="job.scheduledEnd" />
             </div>
 
             <div className="space-y-2">
@@ -345,11 +368,13 @@ export function JobFormDialog({
                 step="0.01"
                 {...register("revenue", { valueAsNumber: true })}
               />
+              <JobFieldHelp helpKey="job.revenue" />
             </div>
 
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="notes">Notes</Label>
               <Textarea id="notes" rows={3} {...register("notes")} />
+              <JobFieldHelp helpKey="job.notes" />
             </div>
           </div>
 
