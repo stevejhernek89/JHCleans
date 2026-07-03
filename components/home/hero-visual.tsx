@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect } from "react";
 import {
   motion,
@@ -10,8 +9,7 @@ import {
   animate,
   MotionValue,
 } from "framer-motion";
-import { MapPin, Droplets, Shield, Sparkles, Check } from "lucide-react";
-import { useSiteContent } from "@/lib/content/site-content-context";
+import { Droplets, Shield, Sparkles, Check } from "lucide-react";
 import { usePrefersReducedMotion } from "@/lib/hooks/use-prefers-reduced-motion";
 
 const highlights = [
@@ -72,7 +70,6 @@ function SparkleField({
 
 export function HeroVisual() {
   const reducedMotion = usePrefersReducedMotion();
-  const { serviceArea } = useSiteContent();
 
   const wipeProgress = useMotionValue(reducedMotion ? 100 : 0);
   const beforeClip = useTransform(
@@ -102,7 +99,7 @@ export function HeroVisual() {
       initial={reducedMotion ? {} : { opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.15 }}
-      className="relative mx-auto w-full max-w-md pb-8 lg:max-w-lg"
+      className="relative mx-auto w-full max-w-md lg:max-w-lg"
     >
       <div
         className="absolute -inset-8 rounded-[2.5rem] bg-gradient-to-br from-primary/10 via-accent/5 to-transparent blur-3xl"
@@ -198,37 +195,6 @@ export function HeroVisual() {
           </div>
         </div>
       </div>
-
-      <motion.div
-        initial={reducedMotion ? {} : { opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7, duration: 0.5 }}
-      >
-        <Link
-          href="#service-area"
-          className="group absolute -bottom-2 right-3 flex max-w-[calc(100%-1.5rem)] items-center gap-3 rounded-2xl border border-white/10 bg-card/90 px-4 py-3 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-primary/25 hover:shadow-primary/10 sm:right-5"
-        >
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/15">
-            <MapPin className="h-4 w-4 text-primary" aria-hidden="true" />
-          </span>
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-semibold text-foreground">
-              {serviceArea.regionLabel}
-            </span>
-            <span className="block text-xs text-muted-foreground transition-colors group-hover:text-foreground/70">
-              Check service availability
-            </span>
-          </span>
-          {!reducedMotion && (
-            <motion.span
-              className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-primary"
-              animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              aria-hidden="true"
-            />
-          )}
-        </Link>
-      </motion.div>
     </motion.div>
   );
 }
