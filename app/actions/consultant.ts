@@ -15,6 +15,8 @@ import { getSiteContent } from "@/lib/content/get-content";
 export interface ConsultantMessage {
   role: "user" | "assistant";
   content: string;
+  /** Base64 data URLs (image/jpeg or image/png) attached to user messages */
+  images?: string[];
 }
 
 export interface ConsultantChatResult {
@@ -35,6 +37,50 @@ export interface ConsultantUsageResult {
   success: boolean;
   usage?: ConsultantChatResult["usage"];
   message?: string;
+}
+
+type OpenAIChatMessage =
+  | { role: "system"; content: string }
+  | { role: "assistant"; content: string }
+  | {
+      role: "user";
+      content: string | Array<{ type: "text"; text: string } | { type: "image_url"; image_url: { url: string } }>;
+    };
+
+function buildOpenAIMessages(
+  systemPrompt: string,
+  messages: ConsultantMessage[]
+): OpenAIChatMessage[] {
+  const apiMessages: OpenAIChatMessage[] = [{ role: "system", content: systemPrompt }];
+
+  for (const message of messages) {
+    if (message.role === "assistant") {
+      apiMessages.push({ role: "assistant", content: message.content });
+      continue;
+    }
+
+    const images = message.images?.filter((url) => url.startsWith("data:image/")) ?? [];
+    if (images.length === 0) {
+      apiMessages.push({ role: "user", content: message.content });
+      continue;
+    }
+
+    const text =
+      message.content.trim() ||
+      "Please look at this screenshot and help me with what I'm seeing in the admin portal.";
+    apiMessages.push({
+      role: "user",
+      content: [
+        { type: "text", text },
+        ...images.map((url) => ({
+          type: "image_url" as const,
+          image_url: { url },
+        })),
+      ],
+    });
+  }
+
+  return apiMessages;
 }
 
 async function requireAuth() {
@@ -79,13 +125,13 @@ export async function consultantChatAction(
     return {
       success: false,
       message:
-        "AI Business Consultant is not configured yet. Add OPENAI_API_KEY to your environment variables (.env.local) and restart the dev server.",
+        "AI Business Consultant is not configured yet. Add OPENAI_API_KEY to your environment variables (local: .env.local, production: Vercel project settings) and redeploy.",
     };
   }
 
   const lastMessage = messages[messages.length - 1];
-  if (!lastMessage || lastMessage.role !== "user" || !lastMessage.content.trim()) {
-    return { success: false, message: "Please enter a question." };
+  if (!lastMessage || lastMessage.role !== "user") {
+    return { success: false, message: "Please enter a question or attach a screenshot." };
   }
 
   if (messages.length > CONSULTANT_LIMITS.maxConversationMessages) {
@@ -96,6 +142,19 @@ export async function consultantChatAction(
   }
 
   const userText = lastMessage.content.trim();
+  const imageCount = lastMessage.images?.length ?? 0;
+
+  if (imageCount > CONSULTANT_LIMITS.maxImagesPerMessage) {
+    return {
+      success: false,
+      message: `You can attach up to ${CONSULTANT_LIMITS.maxImagesPerMessage} screenshot per message.`,
+    };
+  }
+
+  if (!userText && imageCount === 0) {
+    return { success: false, message: "Please enter a question or attach a screenshot." };
+  }
+
   const usageRecord = await getConsultantUsageFromStore();
   const siteContent = await getSiteContent();
   const systemPrompt = buildConsultantSystemPrompt(siteContent);
@@ -103,7 +162,7 @@ export async function consultantChatAction(
     .filter((m) => m.role === "user")
     .reduce((sum, m) => sum + m.content.length, 0);
 
-  const estimatedCost = estimateMaxRequestCost(systemPrompt.length, userMessagesChars);
+  const estimatedCost = estimateMaxRequestCost(systemPrompt.length, userMessagesChars, imageCount);
   const limitCheck = checkConsultantLimits(usageRecord, {
     estimatedRequestCostUsd: estimatedCost,
     userMessageLength: userText.length,
@@ -137,10 +196,7 @@ export async function consultantChatAction(
         model,
         temperature: 0.35,
         max_tokens: CONSULTANT_LIMITS.maxOutputTokens,
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages.map((m) => ({ role: m.role, content: m.content })),
-        ],
+        messages: buildOpenAIMessages(systemPrompt, messages),
       }),
     });
 

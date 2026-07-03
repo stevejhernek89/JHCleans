@@ -11,6 +11,9 @@ export const CONSULTANT_LIMITS = {
   maxOutputTokens: Number(process.env.OPENAI_MAX_OUTPUT_TOKENS ?? "1000"),
   maxUserMessageChars: Number(process.env.OPENAI_MAX_USER_MESSAGE_CHARS ?? "2000"),
   maxConversationMessages: 20,
+  maxImagesPerMessage: 1,
+  /** Rough vision token allowance per screenshot for cost estimation */
+  estimatedVisionTokensPerImage: 800,
 } as const;
 
 export interface ConsultantUsageSummary {
@@ -76,9 +79,12 @@ export function estimateTokenCost(promptTokens: number, completionTokens: number
 /** Conservative upper bound before calling the API */
 export function estimateMaxRequestCost(
   systemPromptChars: number,
-  userMessagesChars: number
+  userMessagesChars: number,
+  imageCount = 0
 ): number {
-  const estimatedPromptTokens = Math.ceil((systemPromptChars + userMessagesChars) / 3.5);
+  const estimatedPromptTokens =
+    Math.ceil((systemPromptChars + userMessagesChars) / 3.5) +
+    imageCount * CONSULTANT_LIMITS.estimatedVisionTokensPerImage;
   return estimateTokenCost(estimatedPromptTokens, CONSULTANT_LIMITS.maxOutputTokens);
 }
 

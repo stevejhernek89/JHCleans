@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState } from "react";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { AiConsultantFloating } from "@/components/admin/ai-consultant/floating-widget";
 import { cn } from "@/lib/utils";
 
 const SidebarContext = createContext<{
@@ -37,6 +38,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col">{children}</div>
+        <AiConsultantFloating />
       </div>
     </SidebarContext.Provider>
   );
