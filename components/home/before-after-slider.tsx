@@ -220,13 +220,10 @@ function PricingPreview() {
               </p>
 
               <div className="my-4">
-                <p className="text-2xl font-bold text-[#0a1628]">
-                  {plan.price}
-                  <span className="text-sm font-medium text-zinc-500">/bin</span>
+                <p className="text-2xl font-bold text-[#0a1628]">{plan.price}</p>
+                <p className="mt-1 text-[10px] text-zinc-400">
+                  {plan.note || "Contact for pricing details"}
                 </p>
-                {plan.note.includes("Billed") || plan.note.includes("3+") ? (
-                  <p className="mt-1 text-[10px] text-zinc-400">{plan.note.split(" · ")[1]}</p>
-                ) : null}
               </div>
 
               <ul className="mb-4 space-y-1.5 text-left" role="list">

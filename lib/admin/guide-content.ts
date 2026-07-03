@@ -225,7 +225,7 @@ export const ADMIN_GUIDE_SECTIONS: GuideSection[] = [
     title: "Services",
     description: "Detailed offerings on /services — one list item per service type.",
     fields: [
-      { name: "Name / Price Label", where: "Service card heading and price.", what: "Service name and displayed price.", how: "Clear name + starting price.", example: "Residential Bin Cleaning / From $35/bin" },
+      { name: "Name / Price Label / Price Note", where: "Each service card on /services.", what: "Service name, main price, and billing note.", how: "Price Label = dollar amount. Price Note = per-bin, billing, quote info.", example: "Starting at $35 / per bin · billed monthly" },
       { name: "Description / Duration", where: "Card body and time badge.", what: "What it includes and time estimate.", how: "Paragraph + short duration.", example: "~15 min per bin" },
       { name: "Booking Link", where: "Book button destination.", what: "Where Book goes.", how: "Usually /book.", example: "/book" },
       { name: "Included (one per line)", where: "Bullet list on card.", what: "What's included.", how: "One item per line.", example: "Pressure wash interior & exterior\nEco-friendly sanitizing" },

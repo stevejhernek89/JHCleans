@@ -277,7 +277,7 @@ function JsonSectionEditor({
             <ListEditor
               items={homepage.pricingPreview}
               onChange={(items) => onChange({ ...homepage, pricingPreview: items })}
-              createItem={() => ({ name: "New Plan", description: "", price: "$0", note: "", popular: false })}
+              createItem={() => ({ name: "New Plan", description: "", price: "$0", note: "per bin", popular: false })}
               renderItem={(item, _index, update) => (
                 <div className="grid gap-3 md:grid-cols-2">
                   <Field helpKey="homepage.pricingPreview.name" label="Name" value={item.name} onChange={(v) => update({ ...item, name: v })} />
@@ -362,7 +362,7 @@ function JsonSectionEditor({
             name: "New Plan",
             description: "",
             priceLabel: "$0",
-            priceNote: "",
+            priceNote: "per bin",
             billingType: "one-time" as const,
             features: ["Feature 1"],
             ctaLabel: "Book Now",
@@ -397,12 +397,14 @@ function JsonSectionEditor({
           included: ["Included item"],
           duration: "",
           priceLabel: "",
+          priceNote: "per bin",
           href: "/book",
         })}
         renderItem={(item, _index, update) => (
           <div className="grid gap-3 md:grid-cols-2">
             <Field helpKey="services.name" label="Name" value={item.name} onChange={(v) => update({ ...item, name: v })} />
             <Field helpKey="services.priceLabel" label="Price Label" value={item.priceLabel} onChange={(v) => update({ ...item, priceLabel: v })} />
+            <Field helpKey="services.priceNote" label="Price Note" value={item.priceNote ?? ""} onChange={(v) => update({ ...item, priceNote: v })} />
             <Field helpKey="services.description" label="Description" value={item.description} onChange={(v) => update({ ...item, description: v })} multiline />
             <Field helpKey="services.duration" label="Duration" value={item.duration} onChange={(v) => update({ ...item, duration: v })} />
             <Field helpKey="services.href" label="Booking Link" value={item.href} onChange={(v) => update({ ...item, href: v })} />

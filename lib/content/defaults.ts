@@ -233,14 +233,14 @@ export function getDefaultSiteContent(): SiteContent {
           name: "One-Time Clean",
           description: "Perfect for a fresh start.",
           price: "$35",
-          note: "per bin",
+          note: "per bin · one-time visit",
           popular: false,
         },
         {
           name: "Monthly Plan",
           description: "Keep your bins fresh all month.",
           price: "$25",
-          note: "per bin · Billed monthly",
+          note: "per bin · billed monthly",
           popular: true,
         },
         {

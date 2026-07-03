@@ -631,10 +631,19 @@ const ENTRIES: HelpEntry[] = [
   h(
     "services.priceLabel",
     "Price Label",
-    "Price shown on the service card.",
-    "Starting price or price range.",
-    "Can use 'From $X' format.",
-    "From $35/bin"
+    "Service card — large price line.",
+    "Main price display on the service card.",
+    "Price with $ sign. Keep billing details in Price Note below.",
+    "Starting at $35",
+    "Use Price Note for per-bin, billing, and quote clarifiers."
+  ),
+  h(
+    "services.priceNote",
+    "Price Note",
+    "Small gray text under the price on each /services card.",
+    "Billing unit and extra pricing clarification.",
+    "Explain per-bin, billing frequency, or that a quote is required.",
+    "per bin · billed monthly · request a quote"
   ),
   h(
     "services.description",

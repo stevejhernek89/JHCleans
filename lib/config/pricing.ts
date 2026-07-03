@@ -12,7 +12,7 @@ export interface PricingPlan {
   name: string;
   description: string;
   priceLabel: string;
-  priceNote?: string;
+  priceNote: string;
   billingType: BillingType;
   popular?: boolean;
   features: string[];
@@ -27,6 +27,7 @@ export interface ServiceOffering {
   included: string[];
   duration: string;
   priceLabel: string;
+  priceNote: string;
   href: string;
 }
 
@@ -104,7 +105,8 @@ export const servicesConfig: ServiceOffering[] = [
       "Exterior rinse and dry",
     ],
     duration: "Approx. 15–20 min per bin",
-    priceLabel: "Starting at $XX — request a quote",
+    priceLabel: "Starting at $XX",
+    priceNote: "per bin · one-time visit · request a quote",
     href: "/book?plan=one-time",
   },
   {
@@ -119,7 +121,8 @@ export const servicesConfig: ServiceOffering[] = [
       "Easy online rescheduling",
     ],
     duration: "Approx. 15–20 min per bin",
-    priceLabel: "Starting at $XX — request a quote",
+    priceLabel: "Starting at $XX",
+    priceNote: "per bin · billed monthly · request a quote",
     href: "/book?plan=monthly",
   },
   {
@@ -134,7 +137,8 @@ export const servicesConfig: ServiceOffering[] = [
       "Recurring billing options",
     ],
     duration: "Approx. 15–20 min per bin",
-    priceLabel: "Starting at $XX — request a quote",
+    priceLabel: "Starting at $XX",
+    priceNote: "per bin · billed biweekly · request a quote",
     href: "/book?plan=biweekly",
   },
   {
@@ -149,7 +153,8 @@ export const servicesConfig: ServiceOffering[] = [
       "Custom scheduling",
     ],
     duration: "Varies by number of bins",
-    priceLabel: "Starting at $XX — request a quote",
+    priceLabel: "Starting at $XX",
+    priceNote: "per bin · 3+ bins · request a quote",
     href: "/book?plan=multi-can",
   },
   {
@@ -164,7 +169,8 @@ export const servicesConfig: ServiceOffering[] = [
       "Same-day options when available",
     ],
     duration: "Approx. 20–30 min per bin",
-    priceLabel: "Starting at $XX — request a quote",
+    priceLabel: "Starting at $XX",
+    priceNote: "per bin · move-in/out · request a quote",
     href: "/book?plan=one-time",
   },
   {
@@ -179,7 +185,8 @@ export const servicesConfig: ServiceOffering[] = [
       "Custom service agreements",
     ],
     duration: "Varies — contact for estimate",
-    priceLabel: "Request a custom quote",
+    priceLabel: "Custom quote",
+    priceNote: "per visit · commercial & HOA · contact for pricing",
     href: "/contact?subject=commercial",
   },
 ];

@@ -34,7 +34,12 @@ export function ServiceCards() {
             ))}
           </ul>
 
-          <p className="mt-4 text-sm font-semibold text-accent">{service.priceLabel}</p>
+          <div className="mt-4">
+            <p className="text-sm font-semibold text-accent">{service.priceLabel}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {service.priceNote || "Contact for pricing details"}
+            </p>
+          </div>
 
           <Button asChild className="mt-4 w-full">
             <Link href={service.href}>{pages.services.ctaLabel}</Link>

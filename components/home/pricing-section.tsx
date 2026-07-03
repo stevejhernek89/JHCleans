@@ -92,9 +92,9 @@ export function PricingSection() {
 
               <div className="my-6">
                 <p className="text-3xl font-bold text-foreground">{plan.priceLabel}</p>
-                {plan.priceNote && (
-                  <p className="mt-1 text-xs text-muted-foreground">{plan.priceNote}</p>
-                )}
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {plan.priceNote || "Contact for pricing details"}
+                </p>
               </div>
 
               <ul className="mb-8 flex-1 space-y-3" role="list">
