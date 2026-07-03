@@ -36,7 +36,7 @@ function SparkleField({
   wipeProgress: MotionValue<number>;
   reducedMotion: boolean;
 }) {
-  const opacity = useTransform(wipeProgress, [100, 45, 20, 0], [0, 0, 1, 1]);
+  const opacity = useTransform(wipeProgress, [0, 55, 80, 100], [0, 0, 1, 1]);
 
   if (reducedMotion) return null;
 
@@ -74,20 +74,20 @@ export function HeroVisual() {
   const reducedMotion = usePrefersReducedMotion();
   const { serviceArea } = useSiteContent();
 
-  const wipeProgress = useMotionValue(reducedMotion ? 0 : 100);
+  const wipeProgress = useMotionValue(reducedMotion ? 100 : 0);
   const beforeClip = useTransform(
     wipeProgress,
     (v) => `inset(0 ${v}% 0 0)`
   );
-  const sweepLeft = useTransform(wipeProgress, (v) => `${100 - v}%`);
-  const sweepOpacity = useTransform(wipeProgress, [100, 50, 0], [0.9, 1, 0]);
-  const cleanBadgeOpacity = useTransform(wipeProgress, [100, 35, 15], [0, 0.6, 1]);
-  const dirtyBadgeOpacity = useTransform(wipeProgress, [100, 65, 45], [1, 0.5, 0]);
+  const sweepLeft = useTransform(wipeProgress, (v) => `${v}%`);
+  const sweepOpacity = useTransform(wipeProgress, [0, 50, 100], [0.9, 1, 0]);
+  const cleanBadgeOpacity = useTransform(wipeProgress, [0, 65, 85], [0, 0.6, 1]);
+  const dirtyBadgeOpacity = useTransform(wipeProgress, [0, 35, 55], [1, 0.5, 0]);
 
   useEffect(() => {
     if (reducedMotion) return;
 
-    const controls = animate(wipeProgress, [100, 0, 0, 100], {
+    const controls = animate(wipeProgress, [0, 100, 100, 0], {
       duration: 9,
       times: [0, 0.38, 0.62, 1],
       repeat: Infinity,
