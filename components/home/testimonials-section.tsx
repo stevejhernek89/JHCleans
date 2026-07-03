@@ -11,7 +11,7 @@ export function TestimonialsSection() {
   const [current, setCurrent] = useState(0);
   const reducedMotion = usePrefersReducedMotion();
   const { testimonials, homepage } = useSiteContent();
-  const { items, isPlaceholder } = testimonials;
+  const { items } = testimonials;
 
   const next = () => setCurrent((c) => (c + 1) % items.length);
   const prev = () => setCurrent((c) => (c - 1 + items.length) % items.length);
@@ -27,11 +27,6 @@ export function TestimonialsSection() {
             >
               {homepage.sections.testimonials.title}
             </h2>
-            {isPlaceholder && (
-              <p className="mt-2 text-sm text-amber-400/80">
-                Placeholder reviews — replace with real testimonials before launch
-              </p>
-            )}
 
             <div className="relative mt-8">
               <AnimatePresence mode="wait">

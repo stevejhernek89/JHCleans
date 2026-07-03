@@ -17,7 +17,6 @@ export default async function PrivacyPage() {
       title={page.title}
       lastUpdated={page.lastUpdated}
       sections={page.sections}
-      showNotice={false}
     />
   );
 }

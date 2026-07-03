@@ -74,7 +74,7 @@ export function ServiceAreaSection() {
   const message = result ? serviceArea.zipMessages[result] : null;
 
   return (
-    <section className="py-16 sm:py-24" aria-labelledby="service-area-heading">
+    <section id="service-area" className="py-16 sm:py-24 scroll-mt-24" aria-labelledby="service-area-heading">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2">
           <div className="glass rounded-2xl p-6 sm:p-8">

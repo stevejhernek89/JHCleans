@@ -75,7 +75,7 @@ export function FoundersPhoto({
   showLink = false,
 }: FoundersPhotoProps) {
   const { about } = useSiteContent();
-  const { founders, foundersNote, photoPlaceholder } = about;
+  const { founders, foundersNote } = about;
   const [leftFounder, rightFounder] = founders;
 
   return (
@@ -123,11 +123,6 @@ export function FoundersPhoto({
             <p className="flex items-center justify-center gap-2 text-sm font-semibold text-primary sm:text-base">
               <Heart className="h-4 w-4 fill-primary" aria-hidden="true" />
               {foundersNote}
-            </p>
-          )}
-          {photoPlaceholder && (
-            <p className="mt-1 text-center text-[10px] text-white/50 sm:text-xs">
-              {photoPlaceholder}
             </p>
           )}
         </div>
