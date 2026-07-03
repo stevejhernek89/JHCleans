@@ -77,21 +77,34 @@ export function HeroVisual() {
     (v) => `inset(0 ${v}% 0 0)`
   );
   const sweepLeft = useTransform(wipeProgress, (v) => `${v}%`);
-  const sweepOpacity = useTransform(wipeProgress, [0, 50, 100], [0.9, 1, 0]);
+  const sweepOpacity = useTransform(wipeProgress, (v) =>
+    v > 1 && v < 99 ? 1 : 0
+  );
   const cleanBadgeOpacity = useTransform(wipeProgress, [0, 65, 85], [0, 0.6, 1]);
   const dirtyBadgeOpacity = useTransform(wipeProgress, [0, 35, 55], [1, 0.5, 0]);
 
   useEffect(() => {
     if (reducedMotion) return;
 
-    const controls = animate(wipeProgress, [0, 100, 100, 0], {
-      duration: 9,
-      times: [0, 0.38, 0.62, 1],
-      repeat: Infinity,
-      ease: [0.42, 0, 0.58, 1],
-    });
+    let cancelled = false;
 
-    return () => controls.stop();
+    async function runWipeLoop() {
+      while (!cancelled) {
+        wipeProgress.set(0);
+        await animate(wipeProgress, 100, {
+          duration: 3.5,
+          ease: [0.42, 0, 0.58, 1],
+        });
+        if (cancelled) break;
+        await new Promise((resolve) => setTimeout(resolve, 2500));
+      }
+    }
+
+    void runWipeLoop();
+
+    return () => {
+      cancelled = true;
+    };
   }, [reducedMotion, wipeProgress]);
 
   return (
@@ -134,15 +147,15 @@ export function HeroVisual() {
             />
           </motion.div>
 
-          {/* Sweep line */}
+          {/* Sweep line — single green edge drives the wipe */}
           {!reducedMotion && (
             <motion.div
-              className="pointer-events-none absolute top-0 bottom-0 z-[15] w-px"
+              className="pointer-events-none absolute top-0 bottom-0 z-[15] w-px -translate-x-1/2"
               style={{ left: sweepLeft, opacity: sweepOpacity }}
               aria-hidden="true"
             >
-              <div className="absolute inset-y-0 -left-6 w-12 bg-gradient-to-r from-transparent via-primary/40 to-transparent blur-sm" />
-              <div className="absolute inset-y-0 w-px bg-white/80 shadow-[0_0_12px_rgba(255,255,255,0.6)]" />
+              <div className="absolute inset-y-0 -left-4 w-8 bg-gradient-to-r from-transparent via-primary/50 to-transparent blur-sm" />
+              <div className="absolute inset-y-0 w-0.5 bg-primary shadow-[0_0_14px_rgba(74,222,128,0.85)]" />
             </motion.div>
           )}
 
