@@ -55,7 +55,8 @@ function UsageMeter({ usage }: { usage: ConsultantUsageState }) {
         />
       </div>
       <p className="text-[11px] text-muted-foreground">
-        {usage.requestsThisHour}/{usage.maxRequestsPerHour} questions this hour
+        {usage.requestsLast5Minutes}/{usage.maxRequestsPer5Minutes} questions in 5 min ·{" "}
+        {usage.requestsToday}/{usage.maxRequestsPerDay} today
       </p>
     </div>
   );
@@ -348,7 +349,8 @@ export const AiConsultantChatPanel = forwardRef<
         {!showStarters && usage && (
           <p className="mt-2 text-[10px] text-muted-foreground">
             ${usage.spendUsd.toFixed(2)} / ${usage.budgetUsd.toFixed(2)} this month ·{" "}
-            {usage.requestsThisHour}/{usage.maxRequestsPerHour} this hour
+            {usage.requestsLast5Minutes}/{usage.maxRequestsPer5Minutes} in 5 min ·{" "}
+            {usage.requestsToday}/{usage.maxRequestsPerDay} today
           </p>
         )}
       </form>

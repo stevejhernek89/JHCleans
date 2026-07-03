@@ -6,7 +6,8 @@ const OUTPUT_COST_PER_M = Number(process.env.OPENAI_OUTPUT_COST_PER_M ?? "0.60")
 
 export const CONSULTANT_LIMITS = {
   monthlyBudgetUsd: Number(process.env.OPENAI_MONTHLY_BUDGET_USD ?? "5"),
-  maxRequestsPerHour: Number(process.env.OPENAI_RATE_LIMIT_PER_HOUR ?? "12"),
+  maxRequestsPerDay: Number(process.env.OPENAI_RATE_LIMIT_PER_DAY ?? "200"),
+  maxRequestsPer5Minutes: Number(process.env.OPENAI_RATE_LIMIT_PER_5_MIN ?? "10"),
   minIntervalMs: Number(process.env.OPENAI_MIN_REQUEST_INTERVAL_MS ?? "5000"),
   maxOutputTokens: Number(process.env.OPENAI_MAX_OUTPUT_TOKENS ?? "1000"),
   maxUserMessageChars: Number(process.env.OPENAI_MAX_USER_MESSAGE_CHARS ?? "2000"),
@@ -22,8 +23,10 @@ export interface ConsultantUsageSummary {
   budgetUsd: number;
   spendRemainingUsd: number;
   requestCount: number;
-  requestsThisHour: number;
-  maxRequestsPerHour: number;
+  requestsLast5Minutes: number;
+  maxRequestsPer5Minutes: number;
+  requestsToday: number;
+  maxRequestsPerDay: number;
   budgetExceeded: boolean;
   percentUsed: number;
 }
@@ -65,9 +68,13 @@ function normalizeUsage(raw: ConsultantUsage | null | undefined): ConsultantUsag
   };
 }
 
+function pruneTimestampsSince(timestamps: string[], windowMs: number): string[] {
+  const cutoff = Date.now() - windowMs;
+  return timestamps.filter((ts) => new Date(ts).getTime() > cutoff);
+}
+
 function pruneRecentTimestamps(timestamps: string[]): string[] {
-  const oneHourAgo = Date.now() - 60 * 60 * 1000;
-  return timestamps.filter((ts) => new Date(ts).getTime() > oneHourAgo);
+  return pruneTimestampsSince(timestamps, 24 * 60 * 60 * 1000);
 }
 
 export function estimateTokenCost(promptTokens: number, completionTokens: number): number {
@@ -90,6 +97,7 @@ export function estimateMaxRequestCost(
 
 export function buildUsageSummary(usage: ConsultantUsage): ConsultantUsageSummary {
   const recent = pruneRecentTimestamps(usage.recentRequestTimestamps);
+  const last5Minutes = pruneTimestampsSince(recent, 5 * 60 * 1000);
   const budgetUsd = CONSULTANT_LIMITS.monthlyBudgetUsd;
   const spendUsd = Math.round(usage.spendUsd * 1_000_000) / 1_000_000;
   const spendRemainingUsd = Math.max(0, budgetUsd - spendUsd);
@@ -100,8 +108,10 @@ export function buildUsageSummary(usage: ConsultantUsage): ConsultantUsageSummar
     budgetUsd,
     spendRemainingUsd,
     requestCount: usage.requestCount,
-    requestsThisHour: recent.length,
-    maxRequestsPerHour: CONSULTANT_LIMITS.maxRequestsPerHour,
+    requestsLast5Minutes: last5Minutes.length,
+    maxRequestsPer5Minutes: CONSULTANT_LIMITS.maxRequestsPer5Minutes,
+    requestsToday: recent.length,
+    maxRequestsPerDay: CONSULTANT_LIMITS.maxRequestsPerDay,
     budgetExceeded: spendUsd >= budgetUsd,
     percentUsed: budgetUsd > 0 ? Math.min(100, (spendUsd / budgetUsd) * 100) : 100,
   };
@@ -119,8 +129,7 @@ export function checkConsultantLimits(
 ): ConsultantLimitCheck {
   const normalized = normalizeUsage(usage);
   const summary = buildUsageSummary(normalized);
-  const recent = pruneRecentTimestamps(normalized.recentRequestTimestamps);
-  const { monthlyBudgetUsd, maxRequestsPerHour, minIntervalMs, maxUserMessageChars } =
+  const { monthlyBudgetUsd, maxRequestsPerDay, maxRequestsPer5Minutes, minIntervalMs, maxUserMessageChars } =
     CONSULTANT_LIMITS;
 
   if (options?.userMessageLength && options.userMessageLength > maxUserMessageChars) {
@@ -148,10 +157,18 @@ export function checkConsultantLimits(
     };
   }
 
-  if (recent.length >= maxRequestsPerHour) {
+  if (summary.requestsLast5Minutes >= maxRequestsPer5Minutes) {
     return {
       allowed: false,
-      message: `Rate limit reached (${maxRequestsPerHour} questions per hour). Wait a bit and try again.`,
+      message: `Rate limit reached (${maxRequestsPer5Minutes} questions per 5 minutes). Wait a bit and try again.`,
+      usage: summary,
+    };
+  }
+
+  if (summary.requestsToday >= maxRequestsPerDay) {
+    return {
+      allowed: false,
+      message: `Daily rate limit reached (${maxRequestsPerDay} questions per day). Try again tomorrow.`,
       usage: summary,
     };
   }

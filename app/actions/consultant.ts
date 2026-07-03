@@ -27,8 +27,10 @@ export interface ConsultantChatResult {
     spendUsd: number;
     budgetUsd: number;
     spendRemainingUsd: number;
-    requestsThisHour: number;
-    maxRequestsPerHour: number;
+    requestsLast5Minutes: number;
+    maxRequestsPer5Minutes: number;
+    requestsToday: number;
+    maxRequestsPerDay: number;
     percentUsed: number;
   };
 }
@@ -101,8 +103,10 @@ export async function getConsultantUsageAction(): Promise<ConsultantUsageResult>
         spendUsd: summary.spendUsd,
         budgetUsd: summary.budgetUsd,
         spendRemainingUsd: summary.spendRemainingUsd,
-        requestsThisHour: summary.requestsThisHour,
-        maxRequestsPerHour: summary.maxRequestsPerHour,
+        requestsLast5Minutes: summary.requestsLast5Minutes,
+        maxRequestsPer5Minutes: summary.maxRequestsPer5Minutes,
+        requestsToday: summary.requestsToday,
+        maxRequestsPerDay: summary.maxRequestsPerDay,
         percentUsed: summary.percentUsed,
       },
     };
@@ -176,8 +180,10 @@ export async function consultantChatAction(
         spendUsd: limitCheck.usage.spendUsd,
         budgetUsd: limitCheck.usage.budgetUsd,
         spendRemainingUsd: limitCheck.usage.spendRemainingUsd,
-        requestsThisHour: limitCheck.usage.requestsThisHour,
-        maxRequestsPerHour: limitCheck.usage.maxRequestsPerHour,
+        requestsLast5Minutes: limitCheck.usage.requestsLast5Minutes,
+        maxRequestsPer5Minutes: limitCheck.usage.maxRequestsPer5Minutes,
+        requestsToday: limitCheck.usage.requestsToday,
+        maxRequestsPerDay: limitCheck.usage.maxRequestsPerDay,
         percentUsed: limitCheck.usage.percentUsed,
       },
     };
@@ -238,8 +244,10 @@ export async function consultantChatAction(
         spendUsd: updatedUsage.spendUsd,
         budgetUsd: updatedUsage.budgetUsd,
         spendRemainingUsd: updatedUsage.spendRemainingUsd,
-        requestsThisHour: updatedUsage.requestsThisHour,
-        maxRequestsPerHour: updatedUsage.maxRequestsPerHour,
+        requestsLast5Minutes: updatedUsage.requestsLast5Minutes,
+        maxRequestsPer5Minutes: updatedUsage.maxRequestsPer5Minutes,
+        requestsToday: updatedUsage.requestsToday,
+        maxRequestsPerDay: updatedUsage.maxRequestsPerDay,
         percentUsed: updatedUsage.percentUsed,
       },
     };
