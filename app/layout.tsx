@@ -7,7 +7,6 @@ import {
   faqJsonLd,
 } from "@/lib/seo/metadata";
 import { businessConfig } from "@/lib/config/business";
-import { AnalyticsScripts } from "@/components/layout/analytics-scripts";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -62,7 +61,6 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
-        <AnalyticsScripts />
         {children}
       </body>
     </html>

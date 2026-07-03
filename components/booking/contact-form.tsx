@@ -13,6 +13,7 @@ import { contactSchema, type ContactSchema } from "@/lib/validations/schemas";
 import { submitContactAction } from "@/app/actions/contact";
 import { useSiteContent } from "@/lib/content/site-content-context";
 import { trackConversion } from "@/lib/analytics/track";
+import { PrivacyConsentLabel } from "@/components/forms/privacy-consent-label";
 
 interface ContactFormProps {
   defaultSubject?: string;
@@ -121,9 +122,14 @@ export function ContactForm({ defaultSubject = "general" }: ContactFormProps) {
             />
           )}
         />
-        <Label htmlFor="contact-consent" className="text-sm text-muted-foreground leading-relaxed">
-          I agree to be contacted by {business.name} regarding my inquiry.
+        <Label htmlFor="contact-consent" className="sr-only">
+          Privacy consent
         </Label>
+        <PrivacyConsentLabel
+          htmlFor="contact-consent"
+          businessName={business.name}
+          purpose="regarding my inquiry"
+        />
       </div>
       {errors.consent && (
         <p className="text-sm text-destructive" role="alert">{errors.consent.message}</p>

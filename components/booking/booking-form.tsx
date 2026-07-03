@@ -21,6 +21,7 @@ import { bookingSchema, type BookingSchema } from "@/lib/validations/schemas";
 import { submitBookingAction } from "@/app/actions/booking";
 import { useSiteContent } from "@/lib/content/site-content-context";
 import { trackConversion } from "@/lib/analytics/track";
+import { PrivacyConsentLabel } from "@/components/forms/privacy-consent-label";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
@@ -451,11 +452,14 @@ export function BookingForm() {
                   />
                 )}
               />
-              <Label htmlFor="consent" className="text-sm leading-relaxed text-muted-foreground">
-                I agree to be contacted by {business.name} regarding my booking
-                request. I understand this is a service request, not a confirmed
-                appointment until verified.
+              <Label htmlFor="consent" className="sr-only">
+                Privacy consent
               </Label>
+              <PrivacyConsentLabel
+                htmlFor="consent"
+                businessName={business.name}
+                purpose="regarding my booking request. I understand this is a service request, not a confirmed appointment until verified"
+              />
             </div>
             {errors.consent && (
               <p className="text-sm text-destructive" role="alert">

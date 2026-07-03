@@ -20,6 +20,7 @@ import { quoteSchema, type QuoteSchema } from "@/lib/validations/schemas";
 import { submitQuoteAction } from "@/app/actions/contact";
 import { useSiteContent } from "@/lib/content/site-content-context";
 import { trackConversion } from "@/lib/analytics/track";
+import { PrivacyConsentLabel } from "@/components/forms/privacy-consent-label";
 
 export function QuoteForm() {
   const { business } = useSiteContent();
@@ -174,9 +175,14 @@ export function QuoteForm() {
             />
           )}
         />
-        <Label htmlFor="quote-consent" className="text-sm text-muted-foreground leading-relaxed">
-          I agree to be contacted by {business.name} with pricing information.
+        <Label htmlFor="quote-consent" className="sr-only">
+          Privacy consent
         </Label>
+        <PrivacyConsentLabel
+          htmlFor="quote-consent"
+          businessName={business.name}
+          purpose="with pricing information"
+        />
       </div>
       {errors.consent && (
         <p className="text-sm text-destructive" role="alert">{errors.consent.message}</p>

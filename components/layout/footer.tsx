@@ -5,6 +5,7 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import { Logo } from "@/components/layout/logo";
 import { useSiteContent } from "@/lib/content/site-content-context";
 import { formatPhoneForTel } from "@/lib/utils";
+import { CookieSettingsLink } from "@/components/layout/cookie-settings-link";
 
 const socialLinks = [
   { key: "facebook" as const, label: "Facebook" },
@@ -148,6 +149,7 @@ export function Footer() {
             <Link href="/cancellation" className="text-muted-foreground hover:text-accent">
               Cancellation Policy
             </Link>
+            <CookieSettingsLink />
           </nav>
         </div>
       </div>

@@ -2,15 +2,17 @@
 
 import Script from "next/script";
 import { businessConfig } from "@/lib/config/business";
+import { useCookieConsent } from "@/components/layout/cookie-consent-provider";
 
 export function AnalyticsScripts() {
+  const { analyticsAllowed } = useCookieConsent();
   const { googleAnalyticsId, googleTagManagerId, metaPixelId } =
     businessConfig.analytics;
 
   const hasAnalytics =
     googleAnalyticsId || googleTagManagerId || metaPixelId;
 
-  if (!hasAnalytics) return null;
+  if (!hasAnalytics || !analyticsAllowed) return null;
 
   return (
     <>

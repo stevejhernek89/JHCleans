@@ -45,7 +45,7 @@ export const bookingSchema = z.object({
   trashCollectionDay: z.string().min(1, "Please select your trash day"),
   notes: z.string().max(500, "Notes must be under 500 characters").optional(),
   consent: z.boolean().refine((val) => val === true, {
-    message: "You must agree to be contacted",
+    message: "You must agree to the Privacy Policy to continue",
   }),
   honeypot: z.string().max(0, "Invalid submission"),
 }).refine(
@@ -68,7 +68,7 @@ export const contactSchema = z.object({
     .min(10, "Please provide more detail")
     .max(1000, "Message is too long"),
   consent: z.boolean().refine((val) => val === true, {
-    message: "You must agree to be contacted",
+    message: "You must agree to the Privacy Policy to continue",
   }),
   honeypot: z.string().max(0, "Invalid submission"),
 });
@@ -92,7 +92,7 @@ export const quoteSchema = z.object({
   binCount: z.number().int().min(1).max(20),
   message: z.string().max(500).optional(),
   consent: z.boolean().refine((val) => val === true, {
-    message: "You must agree to be contacted",
+    message: "You must agree to the Privacy Policy to continue",
   }),
   honeypot: z.string().max(0, "Invalid submission"),
 });
